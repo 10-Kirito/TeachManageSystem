@@ -26,7 +26,10 @@
     </div>
 
     <!-- 可选课程显示-->
-    <el-table :data="classData" :row-style="{height: '30px'}" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
+    <el-table :data="classData" :row-style="{height: '30px'}"
+              :header-cell-style="{background:'#ADD8E6',color:'#606266'}"
+              border stripe header-cell-class-name="headerBg"
+              @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="classId" label="课程号" ></el-table-column>
       <el-table-column prop="className" label="课程名"></el-table-column>
@@ -43,7 +46,7 @@
     </el-table>
 
     <div style="margin: 10px 0">
-      <el-button style="width: 90px" type="success">确定</el-button>
+      <el-button style="width: 90px" type="primary" @click="putData">确定</el-button>
     </div>
 
     <el-row>
@@ -108,11 +111,22 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   name: "selectClass",
   data(){
     return{
-      user:null,
+      user:{
+        birthday: null,
+        departId: null,
+        gender: null,
+        nativePlace: null,
+        phoneNumber: null,
+        state: null,
+        studentId: null,
+        studentName: null
+      },
       searchInfo: {
         classId :null,
         className : null,
@@ -318,14 +332,23 @@ export default {
           school: "宝山"
         }
       ],
-      options:[]
+      options:[],
+      multipleSelection: []
     }
   },
   created() {
     this.handleData();
     this.load();
+    this.getUser();
   },
   methods: {
+    getUser(){
+      const data = JSON.parse(localStorage.getItem('userInfo'))
+      if (data) {
+        Vue.set(this, 'user', data);
+        console.log(this.user);
+      }
+    },
     load(){
       // 获取所有的院系名称，并存储
       this.request.get("/department/allName").then(data =>{
@@ -377,7 +400,7 @@ export default {
         case '一': {
           console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
+            // console.log(i);
             this.tableData[i-1].weekArray.monday = "A";
           }
           break;
@@ -385,7 +408,7 @@ export default {
         case '二': {
           console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
+            // console.log(i);
             this.tableData[i-1].weekArray.tuesday = "A";
           }
           break;
@@ -393,7 +416,7 @@ export default {
         case '三': {
           console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
+            // console.log(i);
             this.tableData[i-1].weekArray.wednesday = "A";
           }
           break;
@@ -401,7 +424,7 @@ export default {
         case '四': {
           console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
+            // console.log(i);
             this.tableData[i-1].weekArray.thursday = "A";
           }
           break;
@@ -409,7 +432,7 @@ export default {
         case '五': {
           console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
+            // console.log(i);
             this.tableData[i-1].weekArray.friday = "A";
           }
           break;
@@ -433,6 +456,22 @@ export default {
       console.log(`当前页: ${pageNum}`);
       this.pageNum = pageNum
       this.load()
+    },
+    handleSelectionChange(val){
+      console.log(val);
+      this.multipleSelection = val;
+    },
+    putData(){
+      console.log(this.user);
+      const encodedUser = encodeURIComponent(JSON.stringify(this.user));
+      this.request.get("/select-class/student/select", {
+        params: {
+          test: 4,
+          encodeStudent: encodedUser
+        }
+      }).then(response =>{
+          console.log(response);
+      })
     }
   }
 }

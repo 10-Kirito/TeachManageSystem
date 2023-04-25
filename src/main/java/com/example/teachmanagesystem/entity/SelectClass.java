@@ -6,10 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author Kirito
@@ -17,6 +21,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @TableName("select_class")
 @ApiModel(value = "SelectClass对象", description = "")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class SelectClass implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,59 +41,4 @@ public class SelectClass implements Serializable {
     private Integer testScore;
 
     private Integer totalScore;
-
-    public Integer getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
-    public Integer getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
-    }
-    public Integer getOpenRecord() {
-        return openRecord;
-    }
-
-    public void setOpenRecord(Integer openRecord) {
-        this.openRecord = openRecord;
-    }
-    public Integer getUsuallyScore() {
-        return usuallyScore;
-    }
-
-    public void setUsuallyScore(Integer usuallyScore) {
-        this.usuallyScore = usuallyScore;
-    }
-    public Integer getTestScore() {
-        return testScore;
-    }
-
-    public void setTestScore(Integer testScore) {
-        this.testScore = testScore;
-    }
-    public Integer getTotalScore() {
-        return totalScore;
-    }
-
-    public void setTotalScore(Integer totalScore) {
-        this.totalScore = totalScore;
-    }
-
-    @Override
-    public String toString() {
-        return "SelectClass{" +
-            "recordId=" + recordId +
-            ", studentId=" + studentId +
-            ", openRecord=" + openRecord +
-            ", usuallyScore=" + usuallyScore +
-            ", testScore=" + testScore +
-            ", totalScore=" + totalScore +
-        "}";
-    }
 }

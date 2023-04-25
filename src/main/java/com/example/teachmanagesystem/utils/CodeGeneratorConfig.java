@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class CodeGeneratorConfig {
     public static void main(String[] args) {
-        Generate();
+//        Generate();
     }
 
     public static void Generate() {

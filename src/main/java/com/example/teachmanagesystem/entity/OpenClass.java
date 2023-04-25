@@ -32,9 +32,9 @@ public class OpenClass implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer record_id;
+    private Integer recordId;
 
-    private Integer class_record;
+    private Integer classRecord;
     private Integer teacherId;
     private Integer capacity;
     private Integer enrollment;

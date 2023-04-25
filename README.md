@@ -212,6 +212,18 @@ insert into department value (6, '计算机学院', '地球', '1234455');
 |                         |                    |                                                |                          |                        |                         |
 |                         |                    |                                                |                          |                        |                         |
 
+```mysql
+create table select_class(
+    record_id int not null auto_increment primary key ,
+    student_id int not null ,
+    open_record int not null ,
+    usually_score int ,
+    test_score int ,
+    total_score int,
+    foreign key (open_record) references open_class(record_id)
+);
+```
+
 
 
 
