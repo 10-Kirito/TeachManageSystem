@@ -30,8 +30,8 @@ public class OpenClassServiceImpl extends ServiceImpl<OpenClassMapper, OpenClass
     ClassMapper classMapper;
 
     @Override
-    public Page<OpenClass> findPage(Page<OpenClass> page, String classId, String className, String teacherName) {
-        return openClassMapper.findPages(page, classId, className, teacherName);
+    public Page<OpenClass> findPage(Page<OpenClass> page, String classId, String className, String teacherName, Integer classScore, String departName) {
+        return openClassMapper.findPages(page, classId, className, teacherName, classScore, departName);
     }
 
     @Override

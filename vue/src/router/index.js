@@ -80,6 +80,7 @@ const routes = [
     path: '/student',
     name: 'studentHome',
     component: () => import('../views/studentViews/Home.vue'),
+    meta:{title: "首页"},
     children:[
       {
         path: 'selectClass',

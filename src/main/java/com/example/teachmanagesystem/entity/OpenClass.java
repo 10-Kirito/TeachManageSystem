@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.omg.CORBA.PRIVATE_MEMBER;
 
 /**
  * <p>
@@ -31,7 +32,9 @@ public class OpenClass implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Integer record_id;
+
+    private Integer class_record;
     private Integer teacherId;
     private Integer capacity;
     private Integer enrollment;
@@ -52,4 +55,7 @@ public class OpenClass implements Serializable {
     private String teacherName;
     @TableField(exist = false)
     private String position;
+
+    @TableField(exist = false)
+    private String departName;
 }

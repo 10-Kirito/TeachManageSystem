@@ -16,5 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface OpenClassMapper extends BaseMapper<OpenClass> {
 
-    Page<OpenClass> findPages(Page<OpenClass> page, String classId, String className, String teacherName);
+    Page<OpenClass> findPages(Page<OpenClass> page, String classId, String className, String teacherName, Integer classScore, String departName);
 }

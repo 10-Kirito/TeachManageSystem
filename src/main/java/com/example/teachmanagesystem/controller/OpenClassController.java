@@ -48,15 +48,19 @@ public class OpenClassController {
     //            "term": "23年春季",
     //            "classId": "08305001",
     //            "className": "离散数学",
-    //            "teacherName": "陈迪茂"
+    //            "teacherName": "陈迪茂",
+    //            "position": "副教授",
+    //            "score":"4"
     // }
     @GetMapping("/pages")
     public Page<OpenClass> selectByPage(@RequestParam(defaultValue = "1") Integer currentPage,
                                         @RequestParam(defaultValue = "10") Integer pageSize,
                                         @RequestParam(required = false) String classId,
-                                        @RequestParam(required = false) String class_name,
-                                        @RequestParam(required = false) String teacherName) {
-        Page<OpenClass> classPage = iOpenClassService.findPage(new Page<>(currentPage, pageSize), classId, class_name, teacherName);
+                                        @RequestParam(required = false) String className,
+                                        @RequestParam(required = false) String teacherName,
+                                        @RequestParam(required = false) Integer classScore,
+                                        @RequestParam(required = false) String departName) {
+        Page<OpenClass> classPage = iOpenClassService.findPage(new Page<>(currentPage, pageSize), classId, className, teacherName, classScore, departName);
         return classPage;
     }
 

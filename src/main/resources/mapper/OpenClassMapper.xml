@@ -3,10 +3,11 @@
 <mapper namespace="com.example.teachmanagesystem.mapper.OpenClassMapper">
 
     <select id="findPages" resultType="com.example.teachmanagesystem.entity.OpenClass">
-        select open_class.*, c.class_id as classId, c.class_name as className, t.teacher_id, t.teacher_name as teacherName, c.class_score as score, t.position as position
+        select open_class.*, c.class_id as classId, c.class_name as className, t.teacher_id, t.teacher_name as teacherName, c.class_score as score, t.position as position, d.depart_name as departName
         from open_class
-        join class c on open_class.id = c.id
+        join class c on open_class.class_record = c.id
         join teacher t on open_class.teacher_id = t.teacher_id
+        join department d on c.depart_id = d.depart_id
         <where>
             <if test="classId != null and classId != ''">
                 and c.class_id = #{classId}
@@ -16,6 +17,12 @@
             </if>
             <if test="teacherName != null and teacherName != ''">
                 and t.teacher_name like concat('%', #{teacherName}, '%')
+            </if>
+            <if test="departName != null and departName != ''">
+                and d.depart_name like concat('%', #{departName}, '%')
+            </if>
+            <if test="classScore != null">
+                and c.class_score = #{classScore}
             </if>
         </where>
     </select>

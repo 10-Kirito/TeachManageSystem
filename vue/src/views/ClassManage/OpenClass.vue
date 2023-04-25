@@ -12,7 +12,7 @@
       <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
 
-    <!-- 新增按钮-->
+    <!-- 点击按钮-->
     <div style="margin: 10px 0; margin-top: 25px; margin-bottom: 25px">
       <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline" style="margin-left: 2px"></i></el-button>
       <el-button type="danger" @click="handleDelMul" style="margin-right: 5px">批量删除 <i class="el-icon-remove-outline" style="margin-left: 2px"></i></el-button>
@@ -152,6 +152,7 @@ export default {
           teacherName: this.searchInfo.teacherName
         }
       }).then(classPgae => {
+        console.log(classPgae);
         this.tableData = classPgae.records;
         this.total = classPgae.total;
       })

@@ -244,10 +244,10 @@ export default {
     handleData(){
       for (let i=0; i < this.testData.length; i++){
         let parts = this.testData[i].split(",");
-        this.subhandleData(parts);
+        this.subHandleData(parts);
       }
     },
-    subhandleData(parts){
+    subHandleData(parts){
       for (let j = 0; j < parts.length; j++){
         let subparts = parts[j].split("-");
         this.fillData(subparts[0].charAt(0), subparts[0].charAt(1), subparts[1]);
