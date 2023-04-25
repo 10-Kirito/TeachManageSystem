@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.teachmanagesystem.mapper.ClassMapper">
+
+    <select id="findPage" resultType="com.example.teachmanagesystem.entity.Class">
+        select class.*, depart_name as departName
+        from class
+        join department d on class.depart_id = d.depart_id
+        <where>
+            <if test="classId != null and classId != ''">
+                and class_id like concat('%', #{classId}, '%')
+            </if>
+            <if test="className != null and className != ''">
+                and class_name like concat('%', #{className}, '%')
+            </if>
+            <if test="classScore != null">
+                and class_score = #{classScore}
+            </if>
+            <if test="classTime != null">
+                and class_time = #{classTime}
+            </if>
+            <if test="departName != null and departName != ''">
+                and d.depart_name like concat('%', #{departName}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="listwithDepart" resultType="com.example.teachmanagesystem.entity.Class">
+        select class.*, depart_name as departName
+        from class
+        join department d on class.depart_id = d.depart_id
+    </select>
+</mapper>
