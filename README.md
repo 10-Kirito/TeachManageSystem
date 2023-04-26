@@ -336,3 +336,44 @@ subArray: [12][{
 ![image-20230426141507834](assets/image-20230426141507834.png)
 
 新增了一个tools类，将所有额外的算法处理算法放在这里！
+
+# 2023年4月26日21:53:53
+
+```java
+@GetMapping("/student/select")
+    public APIResponse<?> selectClass(@RequestParam String encodeStudent,
+                                   @RequestParam String encodeData) throws UnsupportedEncodingException, JsonProcessingException {
+        // 先进行相关的设置
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // 解码
+        String decodedStudent = URLDecoder.decode(encodeStudent, "UTF-8");
+        String decodedData = URLDecoder.decode(encodeData, "UTF-8");
+
+        // 转换
+        Student student = objectMapper.readValue(decodedStudent, Student.class);
+        System.out.println(student);
+	      List<OpenClass> openClasses = objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass());
+        // 我们获取json数据之后并且将其转换为list类型以后,我们是不能直接去使用list数据的,因为此时的list的类型是LinkedHashMap
+        // 我们仍然需要进行一次转换,转换的过程中再将其转换为我们真正想要的数据类型
+        List<OpenClass> openClasses1 = objectMapper.convertValue(openClasses,new TypeReference<List<OpenClass>>() {});
+
+        /**
+         * 将处理好的学生信息以及对应学生的选课信息传入
+         * 处理后的结果可能有以下几种：
+         * 1. 选课失败！原因：选课时间冲突
+         * 2. 选课成功！
+         */
+
+        return iSelectClassService.studentSelect(student, openClasses1);
+    }
+```
+
+***bug修复，这里之前传参数的时候一直传的是`LinkedHashMap`类型的数据，这个类型不可以直接使用，需要额外的进行另外的转换:***
+
+```java
+List<OpenClass> openClasses1 = objectMapper.convertValue(openClasses,new TypeReference<List<OpenClass>>() {});
+```
+
+这里转换之后才是我们最终想要的数据类型。
