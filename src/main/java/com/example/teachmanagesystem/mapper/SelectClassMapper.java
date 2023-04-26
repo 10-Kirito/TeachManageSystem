@@ -4,6 +4,8 @@ import com.example.teachmanagesystem.entity.SelectClass;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -14,5 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SelectClassMapper extends BaseMapper<SelectClass> {
-
+    List<String> getAllTime(Integer studentId);
 }

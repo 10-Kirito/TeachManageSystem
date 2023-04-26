@@ -2,4 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.teachmanagesystem.mapper.SelectClassMapper">
 
+    <select id="getAllTime" resultType="java.lang.String">
+        select oc.time
+        from select_class
+        join open_class oc on select_class.open_record = oc.record_id
+        where select_class.student_id = #{studentId};
+    </select>
 </mapper>

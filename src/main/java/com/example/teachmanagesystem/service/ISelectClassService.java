@@ -1,7 +1,11 @@
 package com.example.teachmanagesystem.service;
 
+import com.example.teachmanagesystem.entity.OpenClass;
 import com.example.teachmanagesystem.entity.SelectClass;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.teachmanagesystem.entity.Student;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISelectClassService extends IService<SelectClass> {
 
+    void studentSelect(Student student, List<OpenClass> openClasses);
 }

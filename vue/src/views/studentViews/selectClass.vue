@@ -464,10 +464,12 @@ export default {
     putData(){
       console.log(this.user);
       const encodedUser = encodeURIComponent(JSON.stringify(this.user));
+      console.log(this.multipleSelection);
+      const encodedData = encodeURIComponent(JSON.stringify(this.multipleSelection));
       this.request.get("/select-class/student/select", {
         params: {
-          test: 4,
-          encodeStudent: encodedUser
+          encodeStudent: encodedUser,
+          encodeData: encodedData
         }
       }).then(response =>{
           console.log(response);
