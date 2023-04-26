@@ -95,9 +95,9 @@ export default {
           this.$router.push("/student");
           this.$message.success("登陆成功!");
         }else if(res.code == 'FORBIDDEN') {
-          this.$message.success("用户密码错误!");
+          this.$message.error("用户密码错误!");
         }else {
-          this.$message.success("该用户不存在!");
+          this.$message.error("该用户不存在!");
         }
       })
     },

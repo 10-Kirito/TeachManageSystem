@@ -27,7 +27,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class OpenClass implements Serializable {
+public class OpenClass implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
@@ -58,4 +58,6 @@ public class OpenClass implements Serializable {
 
     @TableField(exist = false)
     private String departName;
+
+
 }

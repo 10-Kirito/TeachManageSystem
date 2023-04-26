@@ -2,8 +2,8 @@ package com.example.teachmanagesystem.utils;
 
 public class Tools {
     public static boolean checkExistFinally(String mulTime1, String mulTime2){
-        String [] subtime1 = mulTime1.split(",");
-        String [] subtime2 = mulTime2.split(",");
+        String [] subtime1 = mulTime1.split("，");
+        String [] subtime2 = mulTime2.split("，");
 
         for (String test : subtime1) {
             for (String test1 : subtime2) {

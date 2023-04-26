@@ -1,5 +1,6 @@
 package com.example.teachmanagesystem.service;
 
+import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.OpenClass;
 import com.example.teachmanagesystem.entity.SelectClass;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -17,5 +18,5 @@ import java.util.List;
  */
 public interface ISelectClassService extends IService<SelectClass> {
 
-    void studentSelect(Student student, List<OpenClass> openClasses);
+    APIResponse<?> studentSelect(Student student, List<OpenClass> openClasses);
 }
