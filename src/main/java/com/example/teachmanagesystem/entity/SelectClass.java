@@ -1,6 +1,7 @@
 package com.example.teachmanagesystem.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
@@ -41,4 +42,22 @@ public class SelectClass implements Serializable {
     private Integer testScore;
 
     private Integer totalScore;
+
+    @TableField(exist = false)
+    private String className;
+
+    @TableField(exist = false)
+    private String classId;
+
+    @TableField(exist = false)
+    private String teacherName;
+
+    @TableField(exist = false)
+    private String teacherId;
+
+    @TableField(exist = false)
+    private String score;
+
+    @TableField(exist = false)
+    private String time;
 }

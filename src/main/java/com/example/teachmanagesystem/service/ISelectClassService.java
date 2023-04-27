@@ -19,4 +19,8 @@ import java.util.List;
 public interface ISelectClassService extends IService<SelectClass> {
 
     APIResponse<?> studentSelect(Student student, List<OpenClass> openClasses);
+
+    List<SelectClass> selectMyClass(Integer studentId);
+
+    List<String> selectAllTime(Integer studentId);
 }

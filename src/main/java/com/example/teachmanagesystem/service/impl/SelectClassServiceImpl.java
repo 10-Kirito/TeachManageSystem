@@ -10,7 +10,6 @@ import com.example.teachmanagesystem.service.ISelectClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.teachmanagesystem.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,6 +46,7 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
         // 如果没有时间段冲突的话,就返回false
         return false;
     }
+
     /**
      * 该函数的功能说就是处理学生选课！
      * 逻辑很简单就是先检查所选择的课程是否有时间冲突，如果有的话就会终止选课，提示学生时间冲突;
@@ -83,6 +83,18 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
             System.out.println("选课数据保存成功!");
         }
         return new APIResponse<>(null, APIStatusCode.SUCCESS, "选课成功!");
+    }
+
+    @Override
+    public List<SelectClass> selectMyClass(Integer studentId) {
+        List<SelectClass> selectClasses = selectClassMapper.selectMyClass(studentId);
+        return selectClasses;
+    }
+
+    @Override
+    public List<String> selectAllTime(Integer studentId) {
+
+        return selectClassMapper.selectAllTime(studentId);
     }
 
     // -------------------------------------学生选课END-------------------------------------

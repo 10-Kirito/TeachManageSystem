@@ -2,6 +2,7 @@ package com.example.teachmanagesystem.controller;
 
 
 import com.example.teachmanagesystem.common.APIResponse;
+import com.example.teachmanagesystem.common.APIStatusCode;
 import com.example.teachmanagesystem.entity.OpenClass;
 import com.example.teachmanagesystem.entity.SelectClass;
 import com.example.teachmanagesystem.entity.Student;
@@ -40,6 +41,25 @@ public class SelectClassController {
     @Autowired
     ISelectClassService iSelectClassService;
 
+    @GetMapping("/student/allTime")
+    public APIResponse<List<String>> selectAllTime(@RequestParam Integer studentId){
+
+        List<String> allTime = iSelectClassService.selectAllTime(studentId);
+
+        return  new APIResponse<>(allTime, APIStatusCode.SUCCESS, "获取数据成功");
+    }
+
+
+    /**
+     * 选择课程接口，该接口的作用是返回指定学生的所有选择的课程!
+     * @param studentId
+     * @return
+     */
+    @GetMapping("/student/selected")
+    public APIResponse<List<SelectClass>> selectMyClass(@RequestParam Integer studentId){
+        List<SelectClass> selectClasses = iSelectClassService.selectMyClass(studentId);
+        return new APIResponse<List<SelectClass>>(selectClasses, APIStatusCode.SUCCESS, "查询成功");
+    }
 
 
     /**
@@ -77,7 +97,6 @@ public class SelectClassController {
          * 1. 选课失败！原因：选课时间冲突
          * 2. 选课成功！
          */
-
         return iSelectClassService.studentSelect(student, openClasses);
     }
 

@@ -377,3 +377,36 @@ List<OpenClass> openClasses1 = objectMapper.convertValue(openClasses,new TypeRef
 ```
 
 这里转换之后才是我们最终想要的数据类型。
+
+# 2023年4月27日18:18:10
+
+下午的时候发现了一个特别严重的bug，和JavaScript有关的bug, 简而言之就是和同步和异步有关的，因为JS要来做渲染页面的事情，要考虑很多东西，所以说一切都按序就班这样是不可能的，就会给使用者带来极其不好的游戏体验，所以说有的地方JS不是按照顺序执行的，本次bug就是和这里有关，有的时候我们从后端请求数据，然后将数据渲染到指定的页面：
+
+```javascript
+ async created() {
+    // 获取用户信息
+    await this.getUser();
+    await this.load();
+    // 同步
+    await this.getAllClassTime();
+
+    this.handleData();
+  },
+
+
+····
+
+// 同步
+    async getAllClassTime(){
+      await this.request.get("/select-class/student/allTime",{
+        params: {
+          studentId: this.user.studentId
+        }
+      }).then(reponse => {
+        this.allTime = reponse.data;
+      })
+    },
+```
+
+
+

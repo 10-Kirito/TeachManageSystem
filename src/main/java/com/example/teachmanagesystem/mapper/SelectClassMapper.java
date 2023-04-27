@@ -17,4 +17,8 @@ import java.util.List;
 @Mapper
 public interface SelectClassMapper extends BaseMapper<SelectClass> {
     List<String> getAllTime(Integer studentId);
+
+    List<SelectClass> selectMyClass(Integer studentId);
+
+    List<String> selectAllTime(Integer studentId);
 }

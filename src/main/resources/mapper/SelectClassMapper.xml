@@ -8,4 +8,19 @@
         join open_class oc on select_class.open_record = oc.record_id
         where select_class.student_id = #{studentId};
     </select>
+    <select id="selectMyClass" resultType="com.example.teachmanagesystem.entity.SelectClass">
+        select select_class.usually_score as usuallyScore, select_class.test_score as testScore, select_class.total_score as totalScore,c.class_name as className, c.class_id as classId, t.teacher_id as teacherId,t.teacher_name as teacherName,c.class_score as score, oc.time as time
+        from select_class
+        join student s on select_class.student_id = s.student_id
+        join open_class oc on oc.record_id = select_class.open_record
+        join class c on c.id = oc.class_record
+        join teacher t on oc.teacher_id = t.teacher_id
+        where select_class.student_id = #{studentId};
+    </select>
+    <select id="selectAllTime" resultType="java.lang.String">
+        select oc.time
+        from select_class
+        join open_class oc on oc.record_id = select_class.open_record
+        where select_class.student_id = #{studentId};
+    </select>
 </mapper>

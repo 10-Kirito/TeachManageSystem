@@ -74,17 +74,20 @@
     <el-row>
       <el-col :span="14">
         <div class="grid-content bg-purple">
-          <el-table :data="testClass" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
+          <el-table :data="selectedData" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
             <el-table-column
                 type="index"
                 :index="indexMethod"
                 label="#"
-                width="40px">
+                width="40px"
+                align="center">
             </el-table-column>
             <el-table-column prop="className" label="课程名"></el-table-column>
-            <el-table-column prop="classId" label="课程号" ></el-table-column>
-            <el-table-column prop="teacherId" label="教师号"></el-table-column>
-            <el-table-column prop="score" label="学分"></el-table-column>
+            <el-table-column prop="classId" label="课程号" width="100px"></el-table-column>
+            <el-table-column prop="teacherId" label="教师号" width="100px" align="center"></el-table-column>
+            <el-table-column prop="teacherName" label="教师号" width="100px"></el-table-column>
+            <el-table-column prop="time" label="教师号"></el-table-column>
+            <el-table-column prop="score" label="学分" width="50px" align="center"></el-table-column>
           </el-table>
 
 
@@ -135,6 +138,8 @@ export default {
         departName: null
       },
       classData: [],
+      selectedData: [],
+      allTime: [],
       total:0,
       pageNum:1,
       pageSize:10,
@@ -336,27 +341,58 @@ export default {
       multipleSelection: []
     }
   },
-  created() {
+  async created() {
+    // 获取用户信息
+    await this.getUser();
+    await this.load();
+    // 同步
+    await this.getAllClassTime();
+
     this.handleData();
-    this.load();
-    this.getUser();
   },
   methods: {
+    // 1. 获取学生的相关信息
     getUser(){
       const data = JSON.parse(localStorage.getItem('userInfo'))
       if (data) {
         Vue.set(this, 'user', data);
-        console.log(this.user);
       }
     },
+    // 2. 获取所有的院系名称，并存储，制作下拉框;
+    //    获取所有的可选的课程信息;
+    //    获取该名学生选择的所有的课程信息;
+    //    获取该名学生已选课程的上课时间;
     load(){
       // 获取所有的院系名称，并存储
       this.request.get("/department/allName").then(data =>{
-        console.log(data);
         this.options = data;
       })
       // 获取所有的课程表
       this.getClassData();
+      // 获取所有的该名学生选择的课程
+      this.getAllClass();
+    },
+    // 同步
+    async getAllClassTime(){
+      await this.request.get("/select-class/student/allTime",{
+        params: {
+          studentId: this.user.studentId
+        }
+      }).then(reponse => {
+        this.allTime = reponse.data;
+      })
+    },
+    getAllClass(){
+      this.getUser();
+      this.request.get("/select-class/student/selected",{
+        params: {
+          studentId: this.user.studentId
+        }
+      }).then(reponse => {
+        // console.log(reponse);
+        this.selectedData = reponse.data;
+        // console.log(this.selectedData);
+      })
     },
     getClassData(){
       this.request.get("/open-class/pages", {
@@ -370,7 +406,7 @@ export default {
           departName: this.searchInfo.departName
         }
       }).then(classPgae => {
-        console.log(classPgae);
+        // console.log(classPgae);
         this.classData = classPgae.records;
         this.total = classPgae.total;
       })
@@ -382,8 +418,8 @@ export default {
     // 下面的方法handleData()、subHandleData()、fillData()是为了处理学生已经选择的课程，
     // 并将最终的信息放进课程表当中
     handleData(){
-      for (let i=0; i < this.testData.length; i++){
-        let parts = this.testData[i].split(",");
+      for (let i=0; i < this.allTime.length; i++){
+        let parts = this.allTime[i].split("，");
         this.subHandleData(parts);
       }
     },
@@ -395,44 +431,39 @@ export default {
     },
     fillData(day, begin, end){
       //debugger
-      console.log("分离后的数据为:"+" "+day+" "+begin+" "+end);
+      // console.log("分离后的数据为:"+" "+day+" "+begin+" "+end);
       switch (day) {
         case '一': {
-          console.log(day);
+          // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            // console.log(i);
             this.tableData[i-1].weekArray.monday = "A";
           }
           break;
         }
         case '二': {
-          console.log(day);
+          // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            // console.log(i);
             this.tableData[i-1].weekArray.tuesday = "A";
           }
           break;
         }
         case '三': {
-          console.log(day);
+          // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            // console.log(i);
             this.tableData[i-1].weekArray.wednesday = "A";
           }
           break;
         }
         case '四': {
-          console.log(day);
+          // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            // console.log(i);
             this.tableData[i-1].weekArray.thursday = "A";
           }
           break;
         }
         case '五': {
-          console.log(day);
+          // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            // console.log(i);
             this.tableData[i-1].weekArray.friday = "A";
           }
           break;
@@ -448,34 +479,43 @@ export default {
     },
     // 分页选项相关处理函数
     handleSizeChange(pageSize) {
-      console.log(`每页 ${pageSize} 条`);
+      // console.log(`每页 ${pageSize} 条`);
       this.pageSize = pageSize
       this.load()
     },
     handleCurrentChange(pageNum) {
-      console.log(`当前页: ${pageNum}`);
+      // console.log(`当前页: ${pageNum}`);
       this.pageNum = pageNum
       this.load()
     },
     handleSelectionChange(val){
-      console.log(val);
+      // console.log(val);
       this.multipleSelection = val;
     },
     putData(){
-      console.log(this.user);
-      const encodedUser = encodeURIComponent(JSON.stringify(this.user));
-      console.log(this.multipleSelection);
-      const encodedData = encodeURIComponent(JSON.stringify(this.multipleSelection));
-      this.request.get("/select-class/student/select", {
-        params: {
-          encodeStudent: encodedUser,
-          encodeData: encodedData
-        }
-      }).then(response =>{
+      if (this.multipleSelection.length != 0) {
+        const encodedUser = encodeURIComponent(JSON.stringify(this.user));
+        const encodedData = encodeURIComponent(JSON.stringify(this.multipleSelection));
+        this.request.get("/select-class/student/select", {
+          params: {
+            encodeStudent: encodedUser,
+            encodeData: encodedData
+          }
+        }).then(response => {
           // console.log(response);
-        if (response.code == "BAD_REQUEST")
-          this.$message.error(response.msg);
-      })
+          if (response.code == "BAD_REQUEST")
+            this.$message.error(response.msg);
+          else
+            this.$message.success(response.msg);
+        })
+      }
+      this.multipleSelection = [];
+    },
+    clearTable(){
+      // 该函数的作用是清空已经排好课的课程表
+      for (let i = 0; i < 12; i++) {
+        this.tableData[i].weekArray = {};
+      }
     }
   }
 }
