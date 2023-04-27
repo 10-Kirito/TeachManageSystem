@@ -408,5 +408,7 @@ List<OpenClass> openClasses1 = objectMapper.convertValue(openClasses,new TypeRef
     },
 ```
 
+# 2023年4月27日23:28:37
 
+学生部分选课和退课模块设计完成，数据库新增了大量的数据，开课信息打算写完接口再去生成数据。
 

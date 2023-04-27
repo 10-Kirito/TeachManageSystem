@@ -1,5 +1,6 @@
 package com.example.teachmanagesystem.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.common.APIStatusCode;
 import com.example.teachmanagesystem.entity.OpenClass;
@@ -95,6 +96,18 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
     public List<String> selectAllTime(Integer studentId) {
 
         return selectClassMapper.selectAllTime(studentId);
+    }
+
+    @Override
+    public APIResponse<?> dropClass(Student student, List<SelectClass> selectClasses) {
+        QueryWrapper<SelectClass> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("student_id", student.getStudentId());
+        for (SelectClass selectClass: selectClasses) {
+            selectClass.setStudentId(student.getStudentId());
+            queryWrapper.eq("open_record", selectClass.getOpenRecord());
+            remove(queryWrapper);
+        }
+        return new APIResponse<>(null, APIStatusCode.SUCCESS, "删除成功!");
     }
 
     // -------------------------------------学生选课END-------------------------------------

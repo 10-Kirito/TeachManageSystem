@@ -41,6 +41,12 @@ public class SelectClassController {
     @Autowired
     ISelectClassService iSelectClassService;
 
+
+    /**
+     * 获取所有的已选课程的上课时间
+     * @param studentId
+     * @return
+     */
     @GetMapping("/student/allTime")
     public APIResponse<List<String>> selectAllTime(@RequestParam Integer studentId){
 
@@ -48,7 +54,6 @@ public class SelectClassController {
 
         return  new APIResponse<>(allTime, APIStatusCode.SUCCESS, "获取数据成功");
     }
-
 
     /**
      * 选择课程接口，该接口的作用是返回指定学生的所有选择的课程!
@@ -85,8 +90,8 @@ public class SelectClassController {
         // 转换
         Student student = objectMapper.readValue(decodedStudent, Student.class);
         System.out.println(student);
-//        List<OpenClass> openClasses = objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass());
-//        System.out.println(openClasses);
+        // List<OpenClass> openClasses = objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass());
+        // System.out.println(openClasses);
         // 我们获取json数据之后并且将其转换为list类型以后,我们是不能直接去使用list数据的,因为此时的list的类型是LinkedHashMap
         // 我们仍然需要进行一次转换,转换的过程中再将其转换为我们真正想要的数据类型
         List<OpenClass> openClasses = objectMapper.convertValue(objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass()),new TypeReference<List<OpenClass>>() {});
@@ -100,6 +105,34 @@ public class SelectClassController {
         return iSelectClassService.studentSelect(student, openClasses);
     }
 
+
+    @GetMapping("/student/delete")
+    public APIResponse<?> deleteClass(@RequestParam String encodeStudent,
+                                      @RequestParam String encodeData) throws UnsupportedEncodingException, JsonProcessingException {
+        // 先进行相关的设置
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // 解码
+        String decodedStudent = URLDecoder.decode(encodeStudent, "UTF-8");
+        String decodedData = URLDecoder.decode(encodeData, "UTF-8");
+
+        // 转换
+        Student student = objectMapper.readValue(decodedStudent, Student.class);
+        System.out.println(student);
+        // List<OpenClass> openClasses = objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass());
+        // System.out.println(openClasses);
+        // 我们获取json数据之后并且将其转换为list类型以后,我们是不能直接去使用list数据的,因为此时的list的类型是LinkedHashMap
+        // 我们仍然需要进行一次转换,转换的过程中再将其转换为我们真正想要的数据类型
+        List<SelectClass> selectClasses = objectMapper.convertValue(objectMapper.readValue(decodedData, new ArrayList<SelectClass>().getClass()),new TypeReference<List<SelectClass>>() {});
+
+        /**
+         * 将处理好的学生信息以及对应学生的选课信息传入
+         * 处理后的结果只能有一种成功
+         * 1. 退课成功!
+         */
+        return iSelectClassService.dropClass(student, selectClasses);
+    }
 
 
 

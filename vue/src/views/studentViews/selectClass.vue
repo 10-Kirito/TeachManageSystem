@@ -115,8 +115,8 @@
 
 <script>
 import Vue from "vue";
-
 export default {
+  inject:['reload'],
   name: "selectClass",
   data(){
     return{
@@ -418,53 +418,55 @@ export default {
     // 下面的方法handleData()、subHandleData()、fillData()是为了处理学生已经选择的课程，
     // 并将最终的信息放进课程表当中
     handleData(){
+      let c = 64;
       for (let i=0; i < this.allTime.length; i++){
         let parts = this.allTime[i].split("，");
-        this.subHandleData(parts);
+        c++;
+        this.subHandleData(parts, String.fromCharCode(c));
       }
     },
-    subHandleData(parts){
+    subHandleData(parts, CHAR){
       for (let j = 0; j < parts.length; j++){
         let subparts = parts[j].split("-");
-        this.fillData(subparts[0].charAt(0), subparts[0].charAt(1), subparts[1]);
+        this.fillData(subparts[0].charAt(0), subparts[0].charAt(1), subparts[1], CHAR);
       }
     },
-    fillData(day, begin, end){
+    fillData(day, begin, end, CHAR){
       //debugger
       // console.log("分离后的数据为:"+" "+day+" "+begin+" "+end);
       switch (day) {
         case '一': {
           // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            this.tableData[i-1].weekArray.monday = "A";
+            this.tableData[i-1].weekArray.monday = CHAR;
           }
           break;
         }
         case '二': {
           // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            this.tableData[i-1].weekArray.tuesday = "A";
+            this.tableData[i-1].weekArray.tuesday = CHAR;
           }
           break;
         }
         case '三': {
           // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            this.tableData[i-1].weekArray.wednesday = "A";
+            this.tableData[i-1].weekArray.wednesday = CHAR;
           }
           break;
         }
         case '四': {
           // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            this.tableData[i-1].weekArray.thursday = "A";
+            this.tableData[i-1].weekArray.thursday = CHAR;
           }
           break;
         }
         case '五': {
           // console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            this.tableData[i-1].weekArray.friday = "A";
+            this.tableData[i-1].weekArray.friday = CHAR;
           }
           break;
         }
@@ -510,6 +512,7 @@ export default {
         })
       }
       this.multipleSelection = [];
+      this.reload();
     },
     clearTable(){
       // 该函数的作用是清空已经排好课的课程表

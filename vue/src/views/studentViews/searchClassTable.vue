@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1>本学期课程安排</h1>
-    <el-table :data="testClass" border stripe header-cell-class-name="headerBg">
+    <br>
+    <el-table :data="classDetail" border stripe header-cell-class-name="headerBg" :header-cell-style="{background:'#ADD8E6',color:'#606266'}">
       <el-table-column
           type="index"
           :index="indexMethod"
@@ -20,8 +21,9 @@
     </el-table>
     <br>
     <h1>本学期课表</h1>
+    <br>
     <!-- 页面所展示的表格-->
-    <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
+    <el-table :data="tableData" border stripe header-cell-class-name="headerBg" :header-cell-style="{background:'#ADD8E6',color:'#606266'}">
       <el-table-column prop="orderNumber" label="#" width="40px"></el-table-column>
       <el-table-column prop="time" label="上课时间" width="100px"></el-table-column>
       <el-table-column prop="weekArray.monday" label="一"></el-table-column>
@@ -36,11 +38,25 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   name: "searchClassTable",
   data(){
     return {
-      testData: ["三1-3,四3-4", "五1-4,二7-10,一1-12"],
+      user:{
+        birthday: null,
+        departId: null,
+        gender: null,
+        nativePlace: null,
+        phoneNumber: null,
+        state: null,
+        studentId: null,
+        studentName: null
+      },
+      // 存储所有的选课时间段
+      allTime: [],
+      // 渲染课程表的重要数据
       tableData:[
         {
           orderNumber: 1,
@@ -199,7 +215,10 @@ export default {
           }
         }
       ],
+      // 存储所有的选课信息
       classDetail: [],
+
+      // 测试数据
       testClass: [
         {
           classId: "08305124",
@@ -234,66 +253,93 @@ export default {
           questionTime: "一7-8",
           school: "宝山"
         }
-      ]
+      ],
+      testData: ["三1-3,四3-4", "五1-4,二7-10,一1-12"],
     }
   },
-  created() {
-    this.handleData();
+  async created() {
+    await this.getUser();
+    await this.getAllClass();
+
+    await this.getAllClassTime();
+    await this.handleData();
   },
   methods: {
-    handleData(){
-      for (let i=0; i < this.testData.length; i++){
-        let parts = this.testData[i].split(",");
-        this.subHandleData(parts);
+    // 1. 获取用户信息
+    getUser(){
+      const data = JSON.parse(localStorage.getItem('userInfo'))
+      if (data) {
+        Vue.set(this, 'user', data);
       }
     },
-    subHandleData(parts){
+    // 2. 获取所有的已经选择的课程的信息
+    getAllClass(){
+      this.getUser();
+      this.request.get("/select-class/student/selected",{
+        params: {
+          studentId: this.user.studentId
+        }
+      }).then(reponse => {
+        this.classDetail = reponse.data;
+      })
+    },
+
+    // 3. 同步，获取所有的时间段
+    async getAllClassTime(){
+      await this.request.get("/select-class/student/allTime",{
+        params: {
+          studentId: this.user.studentId
+        }
+      }).then(reponse => {
+        this.allTime = reponse.data;
+      })
+    },
+    // 4. 处理已选课程的所有的时间段
+    handleData(){
+      let c = 64;
+      for (let i=0; i < this.allTime.length; i++){
+        let parts = this.allTime[i].split("，");
+        c++;
+        this.subHandleData(parts, String.fromCharCode(c));
+      }
+    },
+    subHandleData(parts, CHAR){
       for (let j = 0; j < parts.length; j++){
         let subparts = parts[j].split("-");
-        this.fillData(subparts[0].charAt(0), subparts[0].charAt(1), subparts[1]);
+        this.fillData(subparts[0].charAt(0), subparts[0].charAt(1), subparts[1], CHAR);
       }
     },
-    fillData(day, begin, end){
+    fillData(day, begin, end, CHAR){
       //debugger
-      console.log("分离后的数据为:"+" "+day+" "+begin+" "+end);
+      // console.log("分离后的数据为:"+" "+day+" "+begin+" "+end);
       switch (day) {
         case '一': {
-          console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
-            this.tableData[i-1].weekArray.monday = "A";
+            this.tableData[i-1].weekArray.monday = CHAR;
           }
           break;
         }
         case '二': {
-          console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
-            this.tableData[i-1].weekArray.tuesday = "A";
+            this.tableData[i-1].weekArray.tuesday = CHAR;
           }
           break;
         }
         case '三': {
-          console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
-            this.tableData[i-1].weekArray.wednesday = "A";
+            this.tableData[i-1].weekArray.wednesday = CHAR;
           }
           break;
         }
         case '四': {
-          console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
-            this.tableData[i-1].weekArray.thursday = "A";
+            this.tableData[i-1].weekArray.thursday = CHAR;
           }
           break;
         }
         case '五': {
-          console.log(day);
           for (let i = parseInt(begin); i <= parseInt(end); i++){
-            console.log(i);
-            this.tableData[i-1].weekArray.friday = "A";
+            this.tableData[i-1].weekArray.friday = CHAR;
           }
           break;
         }

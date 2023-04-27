@@ -23,4 +23,6 @@ public interface ISelectClassService extends IService<SelectClass> {
     List<SelectClass> selectMyClass(Integer studentId);
 
     List<String> selectAllTime(Integer studentId);
+
+    APIResponse<?> dropClass(Student student, List<SelectClass> selectClasses);
 }
