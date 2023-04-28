@@ -40,15 +40,14 @@
       <el-menu-item-group>
         <template slot="title">课程信息</template>
         <el-menu-item index="/admin/class">所有课程</el-menu-item>
-        <el-menu-item index="/admin/openclass"  >开放课程</el-menu-item>
+        <el-menu-item index="/admin/openclass">已分配课程</el-menu-item>
+        <el-menu-item index="/admin/assignClass">课程分配</el-menu-item>
       </el-menu-item-group>
-      <el-menu-item-group title="选课情况">
-        <el-menu-item index="2-3">课程分配</el-menu-item>
-      </el-menu-item-group>
-      <el-submenu index="2-4">
-        <template slot="title">选项4</template>
-        <el-menu-item index="2-4-1">选项4-1</el-menu-item>
-      </el-submenu>
+
+      <!--<el-submenu index="2-4">-->
+      <!--   <template slot="title">选项4</template>-->
+      <!--   <el-menu-item index="2-4-1">选项4-1</el-menu-item>-->
+      <!--</el-submenu>-->
     </el-submenu>
 
     <!--第三组 教师-->

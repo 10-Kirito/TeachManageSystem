@@ -1,6 +1,7 @@
 package com.example.teachmanagesystem.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.Teacher;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.teachmanagesystem.entity.TeacherDTO.TeacherDepartDTO;

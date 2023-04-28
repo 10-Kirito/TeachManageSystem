@@ -27,12 +27,13 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="classId" label="课程号" ></el-table-column>
       <el-table-column prop="className" label="课程名" ></el-table-column>
-      <el-table-column prop="classScore" label="学分" ></el-table-column>
-      <el-table-column prop="classTime" label="学时" ></el-table-column>
+      <el-table-column prop="classScore" label="学分" width="50px"></el-table-column>
+      <el-table-column prop="classTime" label="学时"  width="50px"></el-table-column>
       <el-table-column prop="departName" label="所属院系"></el-table-column>
 
-      <el-table-column width="212">
+      <el-table-column width="320px">
         <template slot-scope="scope">
+          <el-button type="success" @click="openThisClass(scope.row)">开课 </el-button>
           <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit" style="margin-left: 2px"></i></el-button>
           <el-button type="danger" @click="handleDel(scope.row)">删除 <i class="el-icon-circle-close" style="margin-left: 2px"></i></el-button>
         </template>
@@ -129,6 +130,31 @@ export default {
     })
   },
   methods: {
+    openThisClass(data){
+      this.$confirm('是否开设此课程？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(data);
+        this.request.get("/open-class/addOpenClass", {
+          params:{
+            classRecord: data.id
+          }
+        }).then(response =>{
+          console.log(response);
+          if (response.code == 'SUCCESS')
+            this.$message.success(response.msg);
+          else
+            this.$message.error(response.msg);
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消!'
+        });
+      });
+    },
     handleExcelImportSuccess(){
       this.$message.success("文件上传成功！")
       this.load()

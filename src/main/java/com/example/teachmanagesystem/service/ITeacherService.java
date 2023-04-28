@@ -1,6 +1,7 @@
 package com.example.teachmanagesystem.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,4 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ITeacherService extends IService<Teacher> {
 
     Page<Teacher> findPages(Page<Teacher> objectPage, Integer teacherId, String teacherName, String gender, String position, String departName);
+
+    APIResponse<?> add(Teacher teacher);
 }

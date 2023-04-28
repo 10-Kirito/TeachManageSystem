@@ -26,4 +26,43 @@
             </if>
         </where>
     </select>
+
+    <select id="allOpenClass" resultType="com.example.teachmanagesystem.entity.OpenClass">
+        select class_score, c.class_id as classId, c.class_name as className, c.class_score as classScore, capacity, enrollment, d.depart_name as departName
+        from open_class
+        join class c on c.id = open_class.class_record
+        join department d on c.depart_id = d.depart_id
+        <where>
+            <if test="classId != null and classId != ''">
+                and c.class_id = #{classId}
+            </if>
+            <if test="className != null and className != ''">
+                and c.class_name like concat('%', #{className}, '%')
+            </if>
+            <if test="departName != null and departName != ''">
+                and d.depart_name like concat('%', #{departName}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="allAssignTeacher" resultType="com.example.teachmanagesystem.entity.Teacher">
+        select t.teacher_id, t.teacher_name, t.position, d.depart_name as departName
+        from open_class
+        join class c on c.id = open_class.class_record
+        join teacher t on open_class.teacher_id = t.teacher_id
+        join department d on c.depart_id = d.depart_id
+        where c.class_id = #{classId} and depart_name = #{departName}
+    </select>
+    <select id="allUnAssignTeacher" resultType="com.example.teachmanagesystem.entity.Teacher">
+        SELECT DISTINCT t.*,d.depart_name as departName
+        FROM teacher t
+        JOIN department d ON t.depart_id = d.depart_id
+        WHERE d.depart_name = #{departName}
+        AND NOT EXISTS (
+            SELECT 1
+            FROM open_class o
+            JOIN class c ON o.class_record = c.id
+            WHERE c.class_id = #{classId}
+            AND o.teacher_id = t.teacher_id
+        )
+    </select>
 </mapper>

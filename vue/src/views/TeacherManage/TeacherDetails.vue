@@ -1,12 +1,37 @@
 <template>
   <div>
+    <h1>教师详细信息管理!!</h1>
     <!-- 输入搜索框-->
     <div style="margin: 10px 0">
       <el-input style="width: 290px;" suffix-icon="el-icon-search" placeholder="请输入教师号" v-model="searchInfo.teacherId"></el-input>
       <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师名" v-model="searchInfo.teacherName"></el-input>
-      <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师性别" v-model="searchInfo.gender"></el-input>
-      <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师职称" v-model="searchInfo.position"></el-input>
-      <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="教师所属院系" v-model="searchInfo.departId"></el-input>
+      <!--<el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师性别" v-model="searchInfo.gender"></el-input>-->
+      <template>
+        <el-select v-model="searchInfo.gender" placeholder="请输入教师性别" style="width: 290px; margin-left: 5px">
+          <el-option label="男" value="男"></el-option>
+          <el-option label="女" value="女"></el-option>
+        </el-select>
+      </template>
+      <!--<el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师职称" v-model="searchInfo.position"></el-input>-->
+      <template>
+        <el-select v-model="searchInfo.position" placeholder="请输入教师职称" style="width: 290px; margin-left: 5px">
+          <el-option label="辅导员" value="辅导员"></el-option>
+          <el-option label="助教" value="助教"></el-option>
+          <el-option label="讲师" value="讲师"></el-option>
+          <el-option label="副教授" value="副教授"></el-option>
+          <el-option label="教授" value="教授"></el-option>
+        </el-select>
+      </template>
+      <!--<el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="教师所属院系" v-model="searchInfo.departId"></el-input>-->
+      <template>
+        <el-select v-model="searchInfo.departName" placeholder="请选择所属学院" style="width: 290px ; margin-left: 5px">
+          <el-option
+              v-for="item in options"
+              :key="item"
+              :value="item">
+          </el-option>
+        </el-select>
+      </template>
       <el-button style="margin-left: 5px; width: 100px" type="primary" @click="load">搜索</el-button>
       <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
@@ -30,7 +55,7 @@
       <el-table-column prop="gender" label="性别" ></el-table-column>
       <el-table-column prop="birthday" label="出生年月" ></el-table-column>
       <el-table-column prop="position" label="职称" ></el-table-column>
-      <el-table-column prop="departId" label="所属院系"></el-table-column>
+      <el-table-column prop="departName" label="所属院系"></el-table-column>
 
       <el-table-column width="212">
         <template slot-scope="scope">
@@ -56,10 +81,10 @@
     <!--弹窗-->
     <el-dialog title="教师信息" :visible.sync="dialogFormVisible" width="20%" >
       <el-form label-width="80px" size="small">
-        <el-form-item label="教师号">
-          <el-input v-model="addInfo.teacherId" autocomplete="off" style="width: 220px;"/>
-        </el-form-item>
-        <el-form-item label="教师名">
+      <!--<el-form-item label="教师号">-->
+      <!--<el-input v-model="addInfo.teacherId" autocomplete="off" style="width: 220px;"/>-->
+      <!--</el-form-item>-->
+      <el-form-item label="教师名">
           <el-input v-model="addInfo.teacherName" autocomplete="off" style="width: 220px;"/>
         </el-form-item>
         <el-form-item label="性别">
@@ -91,8 +116,18 @@
         </el-form-item>
 
         <el-form-item label="所属院系">
-          <el-input v-model="addInfo.departId" autocomplete="off" style="width: 220px;"/>
+          <!--<el-input v-model="addInfo.departId" autocomplete="off" style="width: 220px;"/>-->
+          <template>
+            <el-select v-model="addInfo.departName" placeholder="请选择所属学院">
+              <el-option
+                  v-for="item in options"
+                  :key="item"
+                  :value="item">
+              </el-option>
+            </el-select>
+          </template>
         </el-form-item>
+
       </el-form>
       <template #footer>
               <span class="dialog-footer">
@@ -115,21 +150,22 @@ export default {
       pageNum:1,
       pageSize:10,
 
+      options: [],
       searchInfo: {
         teacherId :null,
         teacherName : "",
         gender : "",
         position: "",
-        departId: null
+        departName: null
       },
       dialogFormVisible: false,
       addInfo: {
-        teacherId :null,
+        // teacherId :null,
         teacherName : "",
         gender : "",
         birthday:"",
         position: "",
-        departId: null
+        departName: null
       },
       multipleSelection: []
     }
@@ -144,10 +180,10 @@ export default {
       this.load()
     },
     exp(){
-      window.open("http://localhost:9090/teacher/exportAll");
+      window.open("http://localhost:9090/teacher/exportAllTea");
     },
     load() {
-      this.request.get("/teacher/page", {
+      this.request.get("/teacher/pages", {
         params: {
           currentPage: this.pageNum,
           pageSize: this.pageSize,
@@ -155,13 +191,18 @@ export default {
           teacherName: this.searchInfo.teacherName,
           gender: this.searchInfo.gender,
           position: this.searchInfo.position,
-          departId: this.searchInfo.departId
+          departName: this.searchInfo.departName
         }
       }).then(teacherPgae => {
         this.tableData = teacherPgae.records;
         this.total = teacherPgae.total;
         console.log(teacherPgae);
-      })
+      });
+
+      this.request.get("/department/allName").then(data =>{
+        // console.log(data);
+        this.options = data;
+      });
     },
     reset() {
       this.pageNum = 1;
@@ -169,7 +210,7 @@ export default {
       this.searchInfo.teacherName = "";
       this.searchInfo.gender = "";
       this.searchInfo.position = "";
-      this.searchInfo.departId = null;
+      this.searchInfo.departName = null;
 
       this.load();
     },
@@ -189,9 +230,9 @@ export default {
     },
     handleSave(){
       // 弹窗点击确定保存相应的数据
-      this.request.post("/teacher",this.addInfo).then(res => {
-        if(res){
-          this.$message.success("保存成功")
+      this.request.post("/teacher/add",this.addInfo).then(res => {
+        if(res.code == 'SUCCESS'){
+          this.$message.success(res.msg)
           this.dialogFormVisible = false
           this.load()
         }else {

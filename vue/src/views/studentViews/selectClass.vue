@@ -348,7 +348,7 @@ export default {
     // 同步
     await this.getAllClassTime();
 
-    this.handleData();
+    await this.handleData();
   },
   methods: {
     // 1. 获取学生的相关信息

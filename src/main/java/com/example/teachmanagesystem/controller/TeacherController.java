@@ -6,6 +6,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.Teacher;
 import com.example.teachmanagesystem.entity.TeacherDTO.TeacherDepartDTO;
 import com.example.teachmanagesystem.mapper.TeacherMapper;
@@ -113,6 +114,18 @@ public class TeacherController {
     public boolean save(@RequestBody Teacher teacher){
         return iTeacherService.saveOrUpdate(teacher);
     }
+
+
+    /**
+     * 身兼多职，可以添加老师也可以保存修改之后的老师的信息
+     * @param teacher
+     * @return
+     */
+    @PostMapping("add")
+    public APIResponse<?> add(@RequestBody Teacher teacher){
+
+        return iTeacherService.add(teacher);
+    }
     // 2. 如果说你要修改主键的话，你需要另外的去调用Update方法
     // 如果说我们想要修改主键的值的话，我们需要删除原有的主键约束，并且添加新的主键约束
     // 而且需要更新与该记录相关的其他表的关联关系，最后将新主键的值更新到数据库当中；
@@ -154,7 +167,7 @@ public class TeacherController {
         excelWriter.addHeaderAlias("gender", "性别");
         excelWriter.addHeaderAlias("birthday", "出生年月");
         excelWriter.addHeaderAlias("position", "职称");
-        excelWriter.addHeaderAlias("departId", "所属院系");
+        excelWriter.addHeaderAlias("departName", "所属院系");
 
         // 1.3 写出对象到excelWriter中
         excelWriter.write(classList, true);
@@ -181,7 +194,7 @@ public class TeacherController {
         excelReader.addHeaderAlias("性别","gender");
         excelReader.addHeaderAlias("出生年月", "birthday");
         excelReader.addHeaderAlias("职称","position");
-        excelReader.addHeaderAlias("所属院系","departId");
+        excelReader.addHeaderAlias("所属院系","departName");
         List<Teacher> teacherList = excelReader.readAll(Teacher.class);
         iTeacherService.saveBatch(teacherList);
     }

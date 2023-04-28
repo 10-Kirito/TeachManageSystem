@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.Class;
 import com.example.teachmanagesystem.entity.OpenClass;
+import com.example.teachmanagesystem.entity.Teacher;
 import com.example.teachmanagesystem.mapper.OpenClassMapper;
 import com.example.teachmanagesystem.service.IOpenClassService;
 import io.swagger.models.auth.In;
@@ -64,6 +65,50 @@ public class OpenClassController {
         return classPage;
     }
 
+    // 查询当前所有的开放的课程的信息
+    // 返回的数据有：
+    //{
+    //    class_score: 4,
+    //    class_id: "0830001",
+    //    class_name: "离散数学",
+    //    c.class_score: 4,
+    //    capacity: 60,
+    //    enrollment: 0,
+    //    depart_ment: "计算机科学与工程学院"
+    //}
+    @GetMapping("/allOpenClass/pages")
+    public Page<OpenClass> allOpenClass(@RequestParam(defaultValue = "1") Integer currentPage,
+                                        @RequestParam(defaultValue = "10") Integer pageSize,
+                                        @RequestParam(required = false) String classId,
+                                        @RequestParam(required = false) String className,
+                                        @RequestParam(required = false) String departName){
+
+        Page<OpenClass> classPage = iOpenClassService.allOpenClass(new Page<>(currentPage, pageSize), classId, className, departName);
+        return classPage;
+    }
+
+    // 查询所有教授该门课程的老师信息，并且还要求是同一学院的老师
+    @GetMapping("/allAssignTeacher")
+    public Page<Teacher> allAssignTeacher(@RequestParam(defaultValue = "1") Integer currentPage,
+                                          @RequestParam(defaultValue = "5") Integer pageSize,
+                                          @RequestParam String  classId,
+                                          @RequestParam String departName){
+        Page<Teacher> teacherPage = iOpenClassService.allAssignTeacher(new Page<>(currentPage, pageSize),classId, departName);
+        return teacherPage;
+    }
+
+    // 查询没有教授该门课程的老师信息，并且要求是同一学院的老师
+    @GetMapping("/allUnAssignTeacher")
+    public Page<Teacher> allUnAssignTeacher(@RequestParam(defaultValue = "1") Integer currentPage,
+                                            @RequestParam(defaultValue = "5") Integer pageSize,
+                                            @RequestParam String  classId,
+                                            @RequestParam String departName){
+        Page<Teacher> teacherPage = iOpenClassService.allUnAssignTeacher(new Page<>(currentPage, pageSize),classId, departName);
+        return teacherPage;
+    }
+
+
+
 
     // -----------------------2. 删除------------------------
     /**
@@ -84,13 +129,12 @@ public class OpenClassController {
 
     // -----------------------3. 添加------------------------
     // 根据什么进行添加，我们模拟的主要是一个老师可能针对一门课程开了多节课，这样同学们就可以选择不同时间段来上该老师的课程
-    /**
-     * Params:
-     * @classId;
-     * @teacherId;
-     * @time;
-     */
+    // 3.1 第一种添加，仅仅开设开门课程，但是并未分配该课程资源，比如说上课时间、上课地点、上课老师等等
 
+    @GetMapping("/addOpenClass")
+    public APIResponse<?> addOpenClass(@RequestParam Integer classRecord){
+        return iOpenClassService.addOpenClass(classRecord);
+    }
 
 
 }

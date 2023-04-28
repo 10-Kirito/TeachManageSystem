@@ -1,13 +1,11 @@
 <template>
   <div>
-    <h1>这里是开课表，就是本学期所开的课程！在这里对所开的课程进行增删查改！</h1>
+    <h1>这里是已开放课程中已经分配好的课程，就是本学期所开的课程！在这里对所开的课程进行增删查改！</h1>
     <!-- 输入搜索框-->
     <div style="margin: 10px 0">
       <el-input style="width: 290px;" suffix-icon="el-icon-search" placeholder="请输入课程号" v-model="searchInfo.classId"></el-input>
       <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入课程名" v-model="searchInfo.className"></el-input>
       <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师姓名" v-model="searchInfo.classScore"></el-input>
-      <!--<el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入课程学时" v-model="searchInfo.classTime"></el-input>-->
-      <!--<el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="课程所属院系" v-model="searchInfo.departId"></el-input>-->
       <el-button style="margin-left: 5px; width: 100px" type="primary" @click="load">搜索</el-button>
       <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
@@ -17,10 +15,10 @@
       <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline" style="margin-left: 2px"></i></el-button>
       <el-button type="danger" @click="handleDelMul" style="margin-right: 5px">批量删除 <i class="el-icon-remove-outline" style="margin-left: 2px"></i></el-button>
       <!--点击上传文件-->
-      <el-upload action="http://localhost:9090/class/importClass" style="display: inline-block" accept="xlsx" :show-file-list="false" :on-success="handleExcelImportSuccess">
-        <el-button type="primary" style="margin-right: 5px">导入 <i class="el-icon-upload2" style="margin-left: 2px"></i></el-button>
-      </el-upload>
-      <el-button type="primary" @click="exp">导出 <i class="el-icon-download" style="margin-left: 2px"></i></el-button>
+      <!--<el-upload action="http://localhost:9090/class/importClass" style="display: inline-block" accept="xlsx" :show-file-list="false" :on-success="handleExcelImportSuccess">-->
+      <!--   <el-button type="primary" style="margin-right: 5px">导入 <i class="el-icon-upload2" style="margin-left: 2px"></i></el-button>-->
+      <!--</el-upload>-->
+      <!--<el-button type="primary" @click="exp">导出 <i class="el-icon-download" style="margin-left: 2px"></i></el-button>-->
     </div>
 
     <!-- 页面所展示的表格-->
@@ -36,6 +34,7 @@
       <el-table-column prop="location" label="上课地点"></el-table-column>
       <el-table-column prop="capacity" label="容量"></el-table-column>
       <el-table-column prop="enrollment" label="人数"></el-table-column>
+      <el-table-column prop="departName" label="学院"></el-table-column>
 
       <el-table-column width="212">
         <template slot-scope="scope">

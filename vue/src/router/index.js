@@ -46,8 +46,16 @@ const routes = [
        name:'openclass',
        component: () => import('../views/ClassManage/OpenClass.vue'),
        meta: {
-         title: "开设课程"
+         title: "已分配课程"
        }
+      },
+      {
+        path: 'assignClass',
+        name:'assignClass',
+        component: () => import('../views/ClassManage/AssignCourses.vue'),
+        meta: {
+          title: "分配课程"
+        }
       },
       {
         path: 'teacher',

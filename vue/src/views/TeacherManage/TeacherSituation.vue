@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>教师授课情况!!!</h1>
     <!-- 输入搜索框-->
     <div style="margin: 10px 0">
       <el-input style="width: 290px;" suffix-icon="el-icon-search" placeholder="请输入教师号" v-model="searchInfo.teacherId"></el-input>
