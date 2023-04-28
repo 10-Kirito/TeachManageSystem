@@ -422,3 +422,35 @@ List<OpenClass> openClasses1 = objectMapper.convertValue(openClasses,new TypeRef
 
 学生部分选课和退课模块设计完成，数据库新增了大量的数据，开课信息打算写完接口再去生成数据。
 
+# 2023年4月28日20:38:31
+
+SQL语句错误：
+
+```mysql
+select distinct t.*
+from teacher t
+join department d on t.depart_id = d.depart_id
+where d.depart_name = '机电工程与自动化学院'
+    and t.teacher_id not exists (
+    select distinct o.teacher_id
+    from open_class o
+    join class c on o.class_record = c.id
+    where c.class_id = '0000008');
+```
+
+这里如果说子查询结果为空的话，那么整个语句的返回结果也是为空，这里需要借助于***NOT EXISTS***来解决这个问题：
+
+```mysql
+SELECT DISTINCT t.*, depart_name
+FROM teacher t
+JOIN department d ON t.depart_id = d.depart_id
+WHERE d.depart_name = '生命科学学院'
+AND NOT EXISTS (
+    SELECT 1
+    FROM open_class o
+    JOIN class c ON o.class_record = c.id
+    WHERE c.class_id = '12345678'
+    AND o.teacher_id = t.teacher_id
+);
+```
+
