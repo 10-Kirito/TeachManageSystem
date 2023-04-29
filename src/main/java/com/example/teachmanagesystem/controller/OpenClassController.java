@@ -110,7 +110,7 @@ public class OpenClassController {
 
 
 
-    // -----------------------2. 删除------------------------
+    // -------------------------------------2. 删除-------------------------------
     /**
      * Params:
      * @classId;
@@ -136,5 +136,32 @@ public class OpenClassController {
         return iOpenClassService.addOpenClass(classRecord);
     }
 
+    // 给指定的课程分配新的老师:
+    @GetMapping("/addOpenClass/assignTeacher")
+    public APIResponse<?> assignTeacher(@RequestParam Integer classRecord,
+                                        @RequestParam Integer teacherId){
+        return iOpenClassService.assignTeacher(classRecord, teacherId);
+    }
+
+    // 取消分配指定的老师
+    @GetMapping("/addOpenClass/cancelAssign")
+    public APIResponse<?> cancelAssign(@RequestParam Integer classRecord,
+                                       @RequestParam Integer teacherId){
+        return iOpenClassService.cancelAssign(classRecord, teacherId);
+    }
+
+    // 取消开设本课程
+    @GetMapping("/delOpenClass")
+    public APIResponse<?> delOpenClass(@RequestParam Integer classRecord){
+        return iOpenClassService.delOpenClass(classRecord);
+    }
+
+
+    // -----------------------------------更新数据------------------------------------------
+    @GetMapping("/updateExpansion")
+    public APIResponse<?> updateExpansion(@RequestParam Integer recordId,
+                                          @RequestParam Integer expansion){
+        return iOpenClassService.updateExpansion(recordId, expansion);
+    }
 
 }

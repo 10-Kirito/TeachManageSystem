@@ -11,6 +11,7 @@ import com.example.teachmanagesystem.mapper.ClassMapper;
 import com.example.teachmanagesystem.mapper.OpenClassMapper;
 import com.example.teachmanagesystem.service.IOpenClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sun.corba.se.impl.oa.poa.AOMEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,8 +57,6 @@ public class OpenClassServiceImpl extends ServiceImpl<OpenClassMapper, OpenClass
     public APIResponse<?> addOpenClass(Integer classRecord) {
         OpenClass openClass = new OpenClass();
         openClass.setClassRecord(classRecord);
-        openClass.setCapacity(60);
-        openClass.setEnrollment(0);
 
         // 检测该门课程是否已经开放，如果已经开放的话，就提示该门课程已经开放，不可以重复开放
         QueryWrapper<OpenClass> queryWrapper = new QueryWrapper<>();
@@ -83,4 +82,41 @@ public class OpenClassServiceImpl extends ServiceImpl<OpenClassMapper, OpenClass
     public Page<Teacher> allUnAssignTeacher(Page<Object> page, String classId, String departName) {
         return openClassMapper.allUnAssignTeacher(page, classId, departName);
     }
+
+    @Override
+    public APIResponse<?> assignTeacher(Integer classRecord, Integer teacherId) {
+        OpenClass openClass = new OpenClass();
+        openClass.setClassRecord(classRecord);
+        openClass.setTeacherId(teacherId);
+        save(openClass);
+
+        return new APIResponse<>(null, APIStatusCode.SUCCESS, "分配老师成功!");
+    }
+
+    @Override
+    public APIResponse<?> cancelAssign(Integer classRecord, Integer teacherId) {
+        QueryWrapper<OpenClass> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("class_record", classRecord);
+        queryWrapper.eq("teacher_id", teacherId);
+
+        remove(queryWrapper);
+        return new APIResponse<>(null, APIStatusCode.SUCCESS, "取消分配成功!");
+    }
+
+    @Override
+    public APIResponse<?> delOpenClass(Integer classRecord) {
+        QueryWrapper<OpenClass> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("class_record", classRecord);
+        return new APIResponse<>(remove(queryWrapper), APIStatusCode.SUCCESS, "该课程已经取消!");
+    }
+
+    @Override
+    public APIResponse<?> updateExpansion(Integer recordId, Integer expansion) {
+        OpenClass openClass = getById(recordId);
+        openClass.setCapacity(expansion);
+        updateById(openClass);
+        return new APIResponse<>(null, APIStatusCode.SUCCESS, "扩充课程成功!");
+    }
+
+
 }

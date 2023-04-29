@@ -5,7 +5,6 @@ import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.OpenClass;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.teachmanagesystem.entity.Teacher;
-import io.swagger.models.auth.In;
 
 /**
  * <p>
@@ -28,4 +27,12 @@ public interface IOpenClassService extends IService<OpenClass> {
     Page<Teacher> allAssignTeacher(Page<Object> page, String classId, String departName);
 
     Page<Teacher> allUnAssignTeacher(Page<Object> page, String classId, String departName);
+
+    APIResponse<?> assignTeacher(Integer classRecord, Integer teacherId);
+
+    APIResponse<?> cancelAssign(Integer classRecord, Integer teacherId);
+
+    APIResponse<?> delOpenClass(Integer classRecord);
+
+    APIResponse<?> updateExpansion(Integer recordId, Integer expansion);
 }

@@ -14,13 +14,12 @@
           </el-option>
         </el-select>
       </template>
-      <el-button style="margin-left: 5px; width: 100px" type="primary" @click="load">搜索</el-button>
+      <el-button style="margin-left: 5px; width: 100px;" type="primary" @click="load">搜索</el-button>
       <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
 
     <!-- 页面所展示的表格-->
-    <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="40"></el-table-column>
+    <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
       <el-table-column prop="classId" label="课程号"></el-table-column>
       <el-table-column prop="className" label="课程名"></el-table-column>
       <el-table-column prop="departName" label="所属学院"></el-table-column>
@@ -56,7 +55,9 @@
         <el-table-column prop="position" label="职称" width="80px"></el-table-column>
         <el-table-column prop="departName" label="所属院系"></el-table-column>
         <el-table-column width="150px">
-          <el-button type="danger">取消分配<i class="el-icon-circle-close" style="margin-left: 2px"></i></el-button>
+          <template slot-scope="scope">
+            <el-button type="danger" @click="cancelAssign(scope.row)">取消分配<i class="el-icon-circle-close" style="margin-left: 2px"></i></el-button>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -80,8 +81,11 @@
         <el-table-column prop="position" label="职称" width="80px"></el-table-column>
         <el-table-column prop="departName" label="所属院系"></el-table-column>
         <el-table-column width="150px">
-          <el-button type="success">分配该课程<i class="el-icon-circle-check" style="margin-left: 2px"></i></el-button>
+          <template slot-scope="scope">
+            <el-button type="success" @click="assignTeacher(scope.row)">分配该课程<i class="el-icon-circle-check" style="margin-left: 2px"></i></el-button>
+          </template>
         </el-table-column>
+
       </el-table>
 
       <div style="margin-top: 20px;">
@@ -109,6 +113,7 @@
 
 <script>
 export default {
+  inject:['reload'],
   name: "OpenClass",
   data(){
     return {
@@ -139,7 +144,6 @@ export default {
         classTime: null,
         departId: null
       },
-      multipleSelection: [],
       options: [],
       assignTeachers: [],
       unAssignTeachers: []
@@ -172,12 +176,50 @@ export default {
     },
     reset() {
       this.pageNum = 1;
+      this.pagaNum_1 = 1;
+      this.pagaNum_2 = 1;
       this.searchInfo.classId = "";
       this.searchInfo.className = "";
       this.searchInfo.departName = null;
 
       this.load();
     },
+    // 取消分配指定的老师
+    cancelAssign(data){
+      console.log(data);
+      console.log(this.addInfo);
+
+      this.request.get("/open-class/addOpenClass/cancelAssign", {
+        params : {
+          classRecord: this.addInfo.recordId,
+          teacherId: data.teacherId
+        }
+      }).then(response => {
+        console.log(response);
+        if (response.code == 'SUCCESS')
+          this.$message.success(response.msg);
+        this.reload();
+      })
+
+    },
+    // 分配课程按钮，实质上就是插入一条新的开课记录
+    assignTeacher(data){
+      console.log(data);
+      console.log(this.addInfo);
+
+      this.request.get("/open-class/addOpenClass/assignTeacher", {
+        params : {
+          classRecord: this.addInfo.recordId,
+          teacherId: data.teacherId
+        }
+      }).then(response => {
+        console.log(response);
+        if (response.code == 'SUCCESS')
+          this.$message.success(response.msg);
+        this.reload();
+      })
+    },
+    // 处理该页面中的三个分页选项，代码的冗余量就不管了
     handleSizeChange(pageSize) {
       console.log(`每页 ${pageSize} 条`);
       this.pageSize = pageSize
@@ -208,37 +250,26 @@ export default {
       this.pagaNum_2 = pageNum;
       this.getAllUnAssignTeachers();
     },
-    handleAdd(){
-      this.dialogFormVisible = true;
-      this.addInfo = {};
-    },
-    handleSave(){
-      // 弹窗点击确定保存相应的数据
-      this.request.post("/class",this.addInfo).then(res => {
-        if(res){
-          this.$message.success("保存成功")
-          this.dialogFormVisible = false
-          this.load()
-        }else {
-          this.$message.error("保存失败")
-        }
-      })
-    },
+
+    // 删除开课信息，注意如果将该开课信息删除的话，对应的所有的授课教师也会被删除
     handleDel(row) {
-      this.$confirm('从本学期所开设课程中删除, 是否继续?', '提示', {
+      this.$confirm('取消开设本课程, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.addInfo = row;
+        console.log(row);
         // 前端向后端发送信息，删除课程
-        this.request.post("/class/delete",row).then(res => {
-          if(res){
-            this.$message.success("删除成功");
-            this.dialogFormVisible = false;
-            this.load();
-          }else {
-            this.$message.error("删除失败")
+        console.log(this.addInfo.classRecord);
+        this.request.get("/open-class/delOpenClass", {
+          params: {
+            classRecord: this.addInfo.classRecord
           }
+        }).then(response => {
+          if (response.code == 'SUCCESS')
+            this.$message.success(response.msg);
+          this.reload();
         })
       }).catch(() => {
         this.$message({
@@ -247,17 +278,17 @@ export default {
         });
       });
     },
+    // 该按钮是设置弹窗，弹窗内容为查看分配老师以及分配指定的老师
     handleEdit(row) {
       this.addInfo = row;
       this.dialogFormVisible = true;
-
-
       // 获取所有的教授同一课程的老师信息，并且是同一学院的
       this.getAllAssignTeachers();
 
       // 获取所有的没有教授该课程的老师信息，并且要求是同一学院的
       this.getAllUnAssignTeachers();
     },
+    // 获得所有的已经分配该课程的老师
     getAllAssignTeachers(){
       console.log(this.pagaNum_1);
       console.log(this.pageSize_1);
@@ -274,6 +305,7 @@ export default {
         this.total_1 = response.total;
       })
     },
+    // 获得所有的没有分配该课程的老师
     getAllUnAssignTeachers(){
       console.log(this.pagaNum_2);
       console.log(this.pageSize_2);
@@ -290,33 +322,6 @@ export default {
         this.total_2 = response.total;
       })
     },
-    handleSelectionChange(val){
-      console.log(val);
-      this.multipleSelection = val;
-    },
-    handleDelMul() {
-      this.$confirm('从本学期所开设课程中删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 前端向后端发送信息，删除课程
-        this.request.post("/class/muldelete",this.multipleSelection).then(res => {
-          if(res){
-            this.$message.success("删除成功");
-            this.dialogFormVisible = false;
-            this.load();
-          }else {
-            this.$message.error("删除失败")
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    }
   }
 }
 </script>

@@ -10,17 +10,6 @@
       <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
 
-    <!-- 点击按钮-->
-    <div style="margin: 10px 0; margin-top: 25px; margin-bottom: 25px">
-      <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline" style="margin-left: 2px"></i></el-button>
-      <el-button type="danger" @click="handleDelMul" style="margin-right: 5px">批量删除 <i class="el-icon-remove-outline" style="margin-left: 2px"></i></el-button>
-      <!--点击上传文件-->
-      <!--<el-upload action="http://localhost:9090/class/importClass" style="display: inline-block" accept="xlsx" :show-file-list="false" :on-success="handleExcelImportSuccess">-->
-      <!--   <el-button type="primary" style="margin-right: 5px">导入 <i class="el-icon-upload2" style="margin-left: 2px"></i></el-button>-->
-      <!--</el-upload>-->
-      <!--<el-button type="primary" @click="exp">导出 <i class="el-icon-download" style="margin-left: 2px"></i></el-button>-->
-    </div>
-
     <!-- 页面所展示的表格-->
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="40"></el-table-column>
@@ -36,9 +25,10 @@
       <el-table-column prop="enrollment" label="人数"></el-table-column>
       <el-table-column prop="departName" label="学院"></el-table-column>
 
-      <el-table-column width="212">
+      <el-table-column width="210">
+
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">扩容 <i class="el-icon-edit" style="margin-left: 2px"></i></el-button>
+          <el-button type="success" @click="handleExpansion(scope.row)">扩容<i class="el-icon-edit" style="margin-right: 5px"></i></el-button>
           <el-button type="danger" @click="handleDel(scope.row)">删除 <i class="el-icon-circle-close" style="margin-left: 2px"></i></el-button>
         </template>
       </el-table-column>
@@ -57,53 +47,27 @@
       </el-pagination>
     </div>
 
-    <!--弹窗-->
-    <el-dialog title="课程信息" :visible.sync="dialogFormVisible" width="30%" >
-      <el-form label-width="80px" size="small">
-        <el-form-item label="课程号">
-          <el-input v-model="addInfo.classId" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="课程名">
-          <el-input v-model="addInfo.className" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="学分">
-          <el-input v-model="addInfo.classScore" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="教师号">
-          <el-input v-model="addInfo.classScore" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="教师姓名">
-          <el-input v-model="addInfo.classScore" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="职称">
-          <el-input v-model="addInfo.classTime" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="上课时间">
-          <el-input v-model="addInfo.classTime" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="上课地点">
-          <el-input v-model="addInfo.classTime" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="容量">
-          <el-input v-model="addInfo.departId" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="人数">
-          <el-input v-model="addInfo.departId" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleSave">确认</el-button>
-              </span>
-      </template>
+
+    <el-dialog title="修改课程容量:" :visible.sync="dialogVisible_1" width="30%" :before-close="handleClose">
+      <div class="block">
+        <span class="demonstration">当前容量:  &nbsp<el-input v-model="expansion" style="width: 60px"></el-input></span>
+        <el-slider v-model="expansion"></el-slider>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible_1 = false">取 消</el-button>
+        <el-button type="primary" @click="handleExitExpansion">确 定</el-button>
+      </span>
     </el-dialog>
+
+
+
   </div>
 
 </template>
 
 <script>
 export default {
+  inject:['reload'],
   name: "OpenClass",
   data(){
     return {
@@ -112,12 +76,14 @@ export default {
       pageNum:1,
       pageSize:10,
 
+      dialogVisible_1: false,
+      expansion: 60,
+
       searchInfo: {
         classId :"",
         className : "",
         teacherName: ""
       },
-      dialogFormVisible: false,
       addInfo: {
         classId :"",
         className : "",
@@ -134,13 +100,6 @@ export default {
     this.load();
   },
   methods: {
-    handleExcelImportSuccess(){
-      this.$message.success("文件上传成功！")
-      this.load()
-    },
-    exp(){
-      window.open("http://localhost:9090/class/exportAll");
-    },
     load() {
       this.request.get("/open-class/pages", {
         params: {
@@ -160,12 +119,10 @@ export default {
       this.pageNum = 1;
       this.searchInfo.classId = "";
       this.searchInfo.className = "";
-      this.searchInfo.classScore = null;
-      this.searchInfo.classTime = null;
-      this.searchInfo.departId = null;
-
+      this.searchInfo.teacherName = "";
       this.load();
     },
+
     handleSizeChange(pageSize) {
       console.log(`每页 ${pageSize} 条`);
       this.pageSize = pageSize
@@ -176,22 +133,7 @@ export default {
       this.pageNum = pageNum
       this.load()
     },
-    handleAdd(){
-      this.dialogFormVisible = true;
-      this.addInfo = {};
-    },
-    handleSave(){
-      // 弹窗点击确定保存相应的数据
-      this.request.post("/class",this.addInfo).then(res => {
-        if(res){
-          this.$message.success("保存成功")
-          this.dialogFormVisible = false
-          this.load()
-        }else {
-          this.$message.error("保存失败")
-        }
-      })
-    },
+
     handleDel(row) {
       this.$confirm('从本学期所开设课程中删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -202,7 +144,6 @@ export default {
         this.request.post("/class/delete",row).then(res => {
           if(res){
             this.$message.success("删除成功");
-            this.dialogFormVisible = false;
             this.load();
           }else {
             this.$message.error("删除失败")
@@ -215,36 +156,54 @@ export default {
         });
       });
     },
-    handleEdit(row) {
+    // 点击扩容按钮绑定的处理函数
+    handleExpansion(row) {
+    //  capacity: 60
+    //  classId: "08305001"
+    //  className: "离散数学"
+    //  classRecord: 6
+    //  departName : "计算机科学与工程学院"
+    //  enrollment: 0
+    //  location: "计308"
+    //  position: "副教授"
+    //  recordId: 1
+    //  score: 4
+    //  teacherId: 1001
+    //  teacherName: "陈迪茂"
+    //  term: "23年春季"
+    //  time: "一5-6，三5-6，五7-8"
       this.addInfo = row;
-      this.dialogFormVisible = true;
+      this.dialogVisible_1 = true;
+    },
+    // 编辑当前容量并进行更新
+    handleExitExpansion(){
+      // console.log(this.expansion);
+      // console.log(this.addInfo);
+
+      this.request.get("/open-class/updateExpansion", {
+        params: {
+          recordId: this.addInfo.recordId,
+          expansion: this.expansion
+        }
+      }).then(reponse => {
+        console.log(reponse);
+      })
+
+
+      this.dialogVisible_1 = false;
+      this.reload();
     },
     handleSelectionChange(val){
       console.log(val);
       this.multipleSelection = val;
     },
-    handleDelMul() {
-      this.$confirm('从本学期所开设课程中删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 前端向后端发送信息，删除课程
-        this.request.post("/class/muldelete",this.multipleSelection).then(res => {
-          if(res){
-            this.$message.success("删除成功");
-            this.dialogFormVisible = false;
-            this.load();
-          }else {
-            this.$message.error("删除失败")
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+    // 对话框关闭
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
     }
   }
 }

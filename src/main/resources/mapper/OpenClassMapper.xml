@@ -28,7 +28,7 @@
     </select>
 
     <select id="allOpenClass" resultType="com.example.teachmanagesystem.entity.OpenClass">
-        select class_score, c.class_id as classId, c.class_name as className, c.class_score as classScore, capacity, enrollment, d.depart_name as departName
+        select class_score, c.class_id as classId, c.class_name as className, c.class_score as classScore, capacity, enrollment, d.depart_name as departName, open_class.class_record as classRecord
         from open_class
         join class c on c.id = open_class.class_record
         join department d on c.depart_id = d.depart_id
