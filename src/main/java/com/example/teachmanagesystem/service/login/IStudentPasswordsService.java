@@ -1,5 +1,6 @@
 package com.example.teachmanagesystem.service.login;
 
+import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.login.StudentPasswords;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IStudentPasswordsService extends IService<StudentPasswords> {
 
+    APIResponse<?> resetPassword(Integer studentId);
 }

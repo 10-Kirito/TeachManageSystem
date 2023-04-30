@@ -22,10 +22,6 @@
       <el-menu-item-group>
         <template slot="title">信息管理</template>
         <el-menu-item index="1-1">开课申请</el-menu-item>
-        <el-menu-item index="1-2">选项2</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group title="分组2">
-        <el-menu-item index="1-3">选项3</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
 
@@ -43,11 +39,6 @@
         <el-menu-item index="/admin/openclass">已分配课程</el-menu-item>
         <el-menu-item index="/admin/assignClass">课程分配</el-menu-item>
       </el-menu-item-group>
-
-      <!--<el-submenu index="2-4">-->
-      <!--   <template slot="title">选项4</template>-->
-      <!--   <el-menu-item index="2-4-1">选项4-1</el-menu-item>-->
-      <!--</el-submenu>-->
     </el-submenu>
 
     <!--第三组 教师-->
@@ -65,10 +56,6 @@
         <el-menu-item index="3-3">成绩分布</el-menu-item>
         <el-menu-item index="3-3">教师评估</el-menu-item>
       </el-menu-item-group>
-      <el-submenu index="3-4">
-        <template slot="title">选项4</template>
-        <el-menu-item index="3-4-1">选项4-1</el-menu-item>
-      </el-submenu>
     </el-submenu>
 
     <!--第四组 学生-->
@@ -79,15 +66,8 @@
       </template>
       <el-menu-item-group>
         <el-menu-item index="/admin/student">学生信息</el-menu-item>
-        <el-menu-item index="4-2">选项2</el-menu-item>
+        <el-menu-item index="/admin/test">正在开发中</el-menu-item>
       </el-menu-item-group>
-      <el-menu-item-group title="分组2">
-        <el-menu-item index="4-3">选项3</el-menu-item>
-      </el-menu-item-group>
-      <el-submenu index="4-4">
-        <template slot="title">选项4</template>
-        <el-menu-item index="4-4-1">选项4-1</el-menu-item>
-      </el-submenu>
     </el-submenu>
   </el-menu>
 </template>

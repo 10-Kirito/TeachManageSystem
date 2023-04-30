@@ -38,6 +38,7 @@ public class Student implements Serializable {
 
     @TableField(exist = false)
     private String departName;
+
     private LocalDate birthday;
 
     private String nativePlace;

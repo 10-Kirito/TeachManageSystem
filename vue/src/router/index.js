@@ -80,6 +80,14 @@ const routes = [
         meta: {
           title: "学生信息"
         }
+      },
+      {
+        path: 'test',
+        name: 'test',
+        component: () => import('../views/StudentManage/Test.vue'),
+        meta: {
+          title: "正在开发中"
+        }
       }
 
     ]
@@ -115,25 +123,9 @@ const routes = [
         }
       },
       {
-        path: 'searchDeleteClass',
-        name: 'searchDeleteClass',
-        component: () => import('../views/studentViews/seachDeleteClass.vue'),
-        meta: {
-          title: "删除课表查询"
-        }
-      },
-      {
-        path: 'searchClass',
-        name: 'searchClass',
-        component: () => import('../views/studentViews/seachDeleteClass.vue'),
-        meta: {
-          title: "课程查询"
-        }
-      },
-      {
         path: 'ranking',
         name: 'ranking',
-        component: () => import('../views/studentViews/ranking.vue'),
+        component: () => import('../views/studentViews/queryResults.vue'),
         meta: {
           title: "选课排名查询"
         }

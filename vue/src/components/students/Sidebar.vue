@@ -29,14 +29,8 @@
         <el-menu-item index="/student/searchClassTable">
           <i class="el-icon-date"></i>课表查询
         </el-menu-item>
-        <el-menu-item index="/student/searchDeleteClass">
-          <i class="el-icon-document-remove"></i>删除课表查询
-        </el-menu-item>
-        <el-menu-item index="/student/searchClass">
-          <i class="el-icon-search"></i>课程查询
-        </el-menu-item>
         <el-menu-item index="/student/ranking">
-          <i class="el-icon-search"></i>选课排名查询
+          <i class="el-icon-search"></i>成绩查询
         </el-menu-item>
       </el-menu-item-group>
     </el-submenu>

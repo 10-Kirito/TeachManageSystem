@@ -59,4 +59,10 @@ public class StudentPasswordsController {
                 return new APIResponse<Student>(student, APIStatusCode.SUCCESS, "登陆成功!");
         }
     }
+
+    @GetMapping("/reset")
+    public APIResponse<?> resetPassword(@RequestParam Integer studentId){
+
+        return iStudentPasswordsService.resetPassword(studentId);
+    }
 }
