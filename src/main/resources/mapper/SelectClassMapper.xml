@@ -23,4 +23,40 @@
         join open_class oc on oc.record_id = select_class.open_record
         where select_class.student_id = #{studentId};
     </select>
+    <select id="getClassStudents" resultType="com.example.teachmanagesystem.entity.Student">
+        select s.student_id, s.student_name, s.gender, d.depart_name as departName
+        from select_class
+        join open_class oc on oc.record_id = select_class.open_record
+        join class c on c.id = oc.class_record
+        join student s on select_class.student_id = s.student_id
+        join department d on c.depart_id = d.depart_id
+        where oc.teacher_id=#{teacherId} and c.class_id=#{classId}
+    </select>
+    <select id="listClassStudents" resultType="com.example.teachmanagesystem.entity.Student">
+        select s.*, d.depart_name as departName
+        from select_class
+        join open_class oc on oc.record_id = select_class.open_record
+        join class c on c.id = oc.class_record
+        join student s on select_class.student_id = s.student_id
+        join department d on c.depart_id = d.depart_id
+        where oc.teacher_id=#{teacherId} and c.class_id=#{classId};
+    </select>
+    <select id="getStudentDetails" resultType="com.example.teachmanagesystem.entity.SelectClass">
+        select select_class.student_id, select_class.usually_score, test_score, total_score, term, student_name, class_id, class_name, select_class.*
+        from select_class
+        join student s on select_class.student_id = s.student_id
+        join open_class oc on oc.record_id = select_class.open_record
+        join class c on c.id = oc.class_record
+        <where>
+            <if test="studentId != null">
+                and s.student_id = #{studentId}
+            </if>
+            <if test="studentName != null and studentName != ''">
+                and student_name = #{studentName}
+            </if>
+            <if test="className != null and className != ''">
+                and class_name = #{className}
+            </if>
+        </where>
+    </select>
 </mapper>

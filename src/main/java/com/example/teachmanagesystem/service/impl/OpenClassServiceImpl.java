@@ -15,6 +15,8 @@ import com.sun.corba.se.impl.oa.poa.AOMEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -116,6 +118,21 @@ public class OpenClassServiceImpl extends ServiceImpl<OpenClassMapper, OpenClass
         openClass.setCapacity(expansion);
         updateById(openClass);
         return new APIResponse<>(null, APIStatusCode.SUCCESS, "扩充课程成功!");
+    }
+
+    @Override
+    public List<String> myClassName(Integer teacherId) {
+        return openClassMapper.myClassName(teacherId);
+    }
+
+    @Override
+    public List<OpenClass> myClassDetails(Integer teacherId) {
+        return openClassMapper.myClassDetails(teacherId);
+    }
+
+    @Override
+    public Page<OpenClass> myClassDetailsPages(Page<Object> page, Integer teacherId, String classId, String className) {
+        return openClassMapper.myClassDetailsPages(page, teacherId, classId, className);
     }
 
 

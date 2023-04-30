@@ -1,6 +1,7 @@
 package com.example.teachmanagesystem.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.common.APIStatusCode;
 import com.example.teachmanagesystem.entity.OpenClass;
@@ -108,6 +109,31 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
             remove(queryWrapper);
         }
         return new APIResponse<>(null, APIStatusCode.SUCCESS, "删除成功!");
+    }
+
+    @Override
+    public Page<Student> getClassStudents(Page<Object> page, Integer teacherId, String classId) {
+
+        return selectClassMapper.getClassStudents(page, teacherId, classId);
+    }
+
+    @Override
+    public List<Student> listClassStudents(Integer teacherId, String classId) {
+
+        return selectClassMapper.listClassStudents(teacherId, classId);
+    }
+
+    @Override
+    public Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className) {
+        return selectClassMapper.getStudentDetails(page, studentId, studentName, className);
+    }
+
+    @Override
+    public APIResponse<?> regist(Integer recordId, Integer usuallyScore, Integer testScore) {
+        SelectClass selectClass = getById(recordId);
+        selectClass.setUsuallyScore(usuallyScore);
+        selectClass.setTestScore(testScore);
+        return new APIResponse<>( updateById(selectClass), APIStatusCode.SUCCESS, "登记成功");
     }
 
     // -------------------------------------学生选课END-------------------------------------

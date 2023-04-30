@@ -28,7 +28,7 @@
     </select>
 
     <select id="allOpenClass" resultType="com.example.teachmanagesystem.entity.OpenClass">
-        select class_score, c.class_id as classId, c.class_name as className, c.class_score as classScore, capacity, enrollment, d.depart_name as departName, open_class.class_record as classRecord
+        select distinct class_score, c.class_id as classId, c.class_name as className, c.class_score as classScore, capacity, enrollment, d.depart_name as departName, open_class.class_record as classRecord
         from open_class
         join class c on c.id = open_class.class_record
         join department d on c.depart_id = d.depart_id
@@ -40,7 +40,7 @@
                 and c.class_name like concat('%', #{className}, '%')
             </if>
             <if test="departName != null and departName != ''">
-                and d.depart_name like concat('%', #{departName}, '%')
+                and d.depart_name = #{departName}
             </if>
         </where>
     </select>
@@ -64,5 +64,35 @@
             WHERE c.class_id = #{classId}
             AND o.teacher_id = t.teacher_id
         )
+    </select>
+    <select id="myClassName" resultType="java.lang.String">
+        select c.class_name
+        from open_class
+        join teacher t on open_class.teacher_id = t.teacher_id
+        join class c on open_class.class_record = c.id
+        where t.teacher_id=#{teacherId};
+    </select>
+    <select id="myClassDetails" resultType="com.example.teachmanagesystem.entity.OpenClass">
+        select c.class_id as classId, class_name as className, time, location, capacity, enrollment
+        from open_class
+        join teacher t on open_class.teacher_id = t.teacher_id
+        join class c on open_class.class_record = c.id
+        where t.teacher_id=#{teacherId};
+
+    </select>
+    <select id="myClassDetailsPages" resultType="com.example.teachmanagesystem.entity.OpenClass">
+        select c.class_id as classId, class_name as className, time, location, capacity, enrollment
+        from open_class
+        join teacher t on open_class.teacher_id = t.teacher_id
+        join class c on open_class.class_record = c.id
+        <where>
+            t.teacher_id=#{teacherId}
+            <if test="classId != null and classId != ''">
+                and c.class_id = #{classId}
+            </if>
+            <if test="className != null and className != ''">
+                and c.class_name = #{className}
+            </if>
+        </where>
     </select>
 </mapper>

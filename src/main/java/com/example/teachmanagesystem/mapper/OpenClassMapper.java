@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.teachmanagesystem.entity.Teacher;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -24,4 +26,10 @@ public interface OpenClassMapper extends BaseMapper<OpenClass> {
     Page<Teacher> allAssignTeacher(Page<Object> page, String classId, String departName);
 
     Page<Teacher> allUnAssignTeacher(Page<Object> page, String classId, String departName);
+
+    List<String> myClassName(Integer teacherId);
+
+    List<OpenClass> myClassDetails(Integer teacherId);
+
+    Page<OpenClass> myClassDetailsPages(Page<Object> page, Integer teacherId, String classId, String className);
 }

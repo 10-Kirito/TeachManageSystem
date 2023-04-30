@@ -6,6 +6,8 @@ import com.example.teachmanagesystem.entity.OpenClass;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.teachmanagesystem.entity.Teacher;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -35,4 +37,10 @@ public interface IOpenClassService extends IService<OpenClass> {
     APIResponse<?> delOpenClass(Integer classRecord);
 
     APIResponse<?> updateExpansion(Integer recordId, Integer expansion);
+
+    List<String> myClassName(Integer teacherId);
+
+    List<OpenClass> myClassDetails(Integer teacherId);
+
+    Page<OpenClass> myClassDetailsPages(Page<Object> page, Integer teacherId, String classId, String className);
 }

@@ -1,6 +1,9 @@
 package com.example.teachmanagesystem.controller;
 
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.common.APIStatusCode;
 import com.example.teachmanagesystem.entity.OpenClass;
@@ -11,20 +14,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-import org.w3c.dom.ls.LSException;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
+
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
+
+import java.util.Currency;
 import java.util.List;
-import java.util.concurrent.locks.LockSupport;
+
 
 /**
  * <p>
@@ -135,5 +140,70 @@ public class SelectClassController {
     }
 
 
+
+
+    // 教师端所需要的接口:
+    // 1. 查询选择某一节课的所有的学生信息
+    @GetMapping("/getClassStudents")
+    public APIResponse<?> getClassStudents(@RequestParam(defaultValue = "1") Integer currentPage,
+                                           @RequestParam(defaultValue = "10") Integer pageSize,
+                                           @RequestParam Integer teacherId,
+                                           @RequestParam String classId){
+
+        Page<Student> page = iSelectClassService.getClassStudents(new Page<>(currentPage, pageSize), teacherId, classId);
+        return new APIResponse<>(page, APIStatusCode.SUCCESS, "查询成功");
+    }
+
+
+
+    // 2. 导出选择某一节课的所有的学生信息,不涉及成绩：
+    @GetMapping("/exportClassStudents")
+    public void exportClassStudents(HttpServletResponse response,
+                                    @RequestParam Integer teacherId,
+                                    @RequestParam String classId) throws IOException {
+        List<Student> students = iSelectClassService.listClassStudents(teacherId, classId);
+        // 1.2 自定义标题别名
+        ExcelWriter excelWriter = ExcelUtil.getWriter(true);
+        excelWriter.addHeaderAlias("studentId", "学号");
+        excelWriter.addHeaderAlias("studentName", "姓名");
+        excelWriter.addHeaderAlias("gender", "性别");
+        excelWriter.addHeaderAlias("nativePlace", "籍贯");
+        excelWriter.addHeaderAlias("phoneNumber", "电话号码");
+        excelWriter.addHeaderAlias("departName", "所属院系");
+        excelWriter.addHeaderAlias("state", "状态");
+
+        excelWriter.write(students, true);
+
+        // 1.4 设置浏览器相应的格式
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        String fileName = URLEncoder.encode("学生信息","UTF-8");
+        // 1.5 设置输出文件名称
+        response.setHeader("Content-Disposition","attachment;filename="+fileName+".xlsx");
+
+        ServletOutputStream servletOutputStream = response.getOutputStream();
+        excelWriter.flush(servletOutputStream, true);
+        servletOutputStream.close();
+        excelWriter.close();
+    }
+
+    // 3. 获取该名教师所教授的所有学生信息，进行登记分数操作:
+
+    @GetMapping("/registStudents")
+    public APIResponse<?> getStudentDetails(@RequestParam(defaultValue = "1") Integer currentPage,
+                                            @RequestParam(defaultValue = "10") Integer pageSize,
+                                            @RequestParam(required = false) Integer studentId,
+                                            @RequestParam(required = false) String studentName,
+                                            @RequestParam(required = false) String className){
+        Page<SelectClass> page = iSelectClassService.getStudentDetails(new Page<>(currentPage, pageSize), studentId, studentName, className);
+        return new APIResponse<>(page, APIStatusCode.SUCCESS, "查询成功!");
+    }
+
+    // 4. 登记分数
+    @GetMapping("/registScore")
+    public APIResponse<?> registScore(@RequestParam Integer recordId,
+                                      @RequestParam Integer usuallyScore,
+                                      @RequestParam Integer testScore){
+        return iSelectClassService.regist(recordId, usuallyScore, testScore);
+    }
 
 }

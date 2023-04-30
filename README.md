@@ -236,6 +236,24 @@ create table select_class(
 
 
 
+## 2.5 触发器设置
+
+触发器设置：
+
+```mysql
+# 创建触发器
+CREATE TRIGGER update_total_score
+BEFORE UPDATE ON select_class
+FOR EACH ROW
+BEGIN
+   IF NEW.usually_score IS NULL OR NEW.test_score IS NULL THEN
+       SET NEW.total_score = NULL;
+    ELSE
+       SET NEW .total_score = NEW.usually_score * 0.3 + NEW.test_score*0.7;
+   end if;
+END;
+```
+
 
 
 # FAQ

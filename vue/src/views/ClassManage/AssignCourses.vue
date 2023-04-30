@@ -191,7 +191,7 @@ export default {
 
       this.request.get("/open-class/addOpenClass/cancelAssign", {
         params : {
-          classRecord: this.addInfo.recordId,
+          classRecord: this.addInfo.classRecord,
           teacherId: data.teacherId
         }
       }).then(response => {
@@ -209,7 +209,7 @@ export default {
 
       this.request.get("/open-class/addOpenClass/assignTeacher", {
         params : {
-          classRecord: this.addInfo.recordId,
+          classRecord: this.addInfo.classRecord,
           teacherId: data.teacherId
         }
       }).then(response => {

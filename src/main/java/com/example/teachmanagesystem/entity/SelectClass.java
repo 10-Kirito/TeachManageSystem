@@ -60,4 +60,10 @@ public class SelectClass implements Serializable {
 
     @TableField(exist = false)
     private String time;
+
+    @TableField(exist = false)
+    private String studentName;
+
+    @TableField(exist = false)
+    private String Term;
 }

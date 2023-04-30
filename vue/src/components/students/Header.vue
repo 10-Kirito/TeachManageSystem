@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Vue, {useAttrs} from "vue";
+import Vue from "vue";
 
 export default {
   name: "Header",

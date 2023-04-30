@@ -1,5 +1,6 @@
 package com.example.teachmanagesystem.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.teachmanagesystem.common.APIResponse;
 import com.example.teachmanagesystem.entity.OpenClass;
 import com.example.teachmanagesystem.entity.SelectClass;
@@ -25,4 +26,12 @@ public interface ISelectClassService extends IService<SelectClass> {
     List<String> selectAllTime(Integer studentId);
 
     APIResponse<?> dropClass(Student student, List<SelectClass> selectClasses);
+
+    Page<Student> getClassStudents(Page<Object> page, Integer teacherId, String classId);
+
+    List<Student> listClassStudents(Integer teacherId, String classId);
+
+    Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className);
+
+    APIResponse<?> regist(Integer recordId, Integer usuallyScore, Integer testScore);
 }

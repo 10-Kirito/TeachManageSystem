@@ -23,8 +23,8 @@
 <script>
 
 // @ is an alias to /src
-import Sidebar from "@/components/Sidebar.vue";
-import Header from "@/components/Header.vue";
+import Sidebar from "@/components/teachers/Sidebar.vue";
+import Header from "@/components/teachers/Header.vue";
 
 export default {
   name: 'Layout',

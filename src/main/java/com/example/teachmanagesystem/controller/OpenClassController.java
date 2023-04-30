@@ -4,6 +4,7 @@ package com.example.teachmanagesystem.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.teachmanagesystem.common.APIResponse;
+import com.example.teachmanagesystem.common.APIStatusCode;
 import com.example.teachmanagesystem.entity.Class;
 import com.example.teachmanagesystem.entity.OpenClass;
 import com.example.teachmanagesystem.entity.Teacher;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -108,6 +111,34 @@ public class OpenClassController {
     }
 
 
+    // 查询指定老师教授的所有的课程名
+    @GetMapping("/myClassName")
+    public APIResponse<?> myClassName(@RequestParam Integer teacherId){
+
+        List<String> classNames = iOpenClassService.myClassName(teacherId);
+
+        return new APIResponse<>(classNames, APIStatusCode.SUCCESS, "查询成功");
+    }
+
+    // 查询当前教师教授的所有的课程的详细信息
+    @GetMapping("/myClassDetails")
+    public APIResponse<?> myClassDetails(@RequestParam Integer teacherId){
+
+        List<OpenClass> openClasses = iOpenClassService.myClassDetails(teacherId);
+
+        return new APIResponse<>(openClasses, APIStatusCode.SUCCESS, "查询成功");
+    }
+
+    // 查询当前教师教授的所有的课程的详细信息：分页查询
+    @GetMapping("/myClassDetailsPages")
+    public APIResponse<?> myClassDetailsPages(@RequestParam(defaultValue = "1") Integer currentPage,
+                                              @RequestParam(defaultValue = "5") Integer pageSize,
+                                              @RequestParam Integer teacherId,
+                                              @RequestParam(required = false) String classId,
+                                              @RequestParam(required = false) String className){
+        Page<OpenClass> openClassPage = iOpenClassService.myClassDetailsPages(new Page<>(currentPage, pageSize), teacherId, classId, className);
+        return new APIResponse<>(openClassPage, APIStatusCode.SUCCESS, "查询成功 ");
+    }
 
 
     // -------------------------------------2. 删除-------------------------------
@@ -127,7 +158,7 @@ public class OpenClassController {
 
 
 
-    // -----------------------3. 添加------------------------
+    // ----------------------------------------3. 添加------------------------
     // 根据什么进行添加，我们模拟的主要是一个老师可能针对一门课程开了多节课，这样同学们就可以选择不同时间段来上该老师的课程
     // 3.1 第一种添加，仅仅开设开门课程，但是并未分配该课程资源，比如说上课时间、上课地点、上课老师等等
 
@@ -155,6 +186,7 @@ public class OpenClassController {
     public APIResponse<?> delOpenClass(@RequestParam Integer classRecord){
         return iOpenClassService.delOpenClass(classRecord);
     }
+
 
 
     // -----------------------------------更新数据------------------------------------------

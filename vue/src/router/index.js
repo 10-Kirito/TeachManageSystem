@@ -144,7 +144,26 @@ const routes = [
   {
     path: '/teacher',
     name: 'teacherHome',
-    component: () => import('../views/teacherViews/Home.vue')
+    component: () => import('../views/teacherViews/Home.vue'),
+    meta:{title: "首页"},
+    children: [
+      {
+        path: 'myClass',
+        name: 'myClass',
+        component: () => import('../views/teacherViews/myClass.vue'),
+        meta:{
+          title: "我的课程"
+        },
+      },
+      {
+        path: 'registScore',
+        name: 'registScore',
+        component: () => import('../views/teacherViews/registScore.vue'),
+        meta:{
+          title: "分数登记"
+        },
+      }
+    ]
   }
 ]
 
