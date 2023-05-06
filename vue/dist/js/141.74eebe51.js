@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkvue"]=self["webpackChunkvue"]||[]).push([[141],{1998:function(e,n,u){u.r(n),u.d(n,{default:function(){return a}});var t=function(){var e=this,n=e._self._c;return n("div",[e._v(" 这里是管理员主页！ ")])},r=[],c={name:"adminHome"},f=c,l=u(1001),s=(0,l.Z)(f,t,r,!1,null,"bf595d0c",null),a=s.exports}}]);
+//# sourceMappingURL=141.74eebe51.js.map
