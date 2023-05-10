@@ -28,5 +28,5 @@ public interface SelectClassMapper extends BaseMapper<SelectClass> {
 
     List<Student> listClassStudents(Integer teacherId, String classId);
 
-    Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className);
+    Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className, Integer teacherId);
 }

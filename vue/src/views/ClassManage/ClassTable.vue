@@ -277,4 +277,10 @@ export default {
 .headerBg{
   background: #ccc !important;
 }
+
+.el-input--medium .el-input__inner {
+  height: 50px;
+  line-height: 36px;
+}
+
 </style>

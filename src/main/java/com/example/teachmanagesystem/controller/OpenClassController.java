@@ -196,4 +196,14 @@ public class OpenClassController {
         return iOpenClassService.updateExpansion(recordId, expansion);
     }
 
+
+
+    // 分配课程的上课时间和上课地点
+    @GetMapping("/updateTime")
+    public APIResponse<?> updateTime(@RequestParam Integer recordId,
+                                     @RequestParam String time,
+                                     @RequestParam String location){
+        return iOpenClassService.updateTime(recordId, time, location);
+    }
+
 }

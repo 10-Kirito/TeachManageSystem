@@ -135,5 +135,14 @@ public class OpenClassServiceImpl extends ServiceImpl<OpenClassMapper, OpenClass
         return openClassMapper.myClassDetailsPages(page, teacherId, classId, className);
     }
 
+    @Override
+    public APIResponse<?> updateTime(Integer recordId, String time, String location) {
+        OpenClass openClass = getById(recordId);
+        openClass.setTime(time);
+        openClass.setLocation(location);
+        updateById(openClass);
+        return new APIResponse<>(openClass, APIStatusCode.SUCCESS, "设置成功!");
+    }
+
 
 }

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,13 +95,15 @@ public class SelectClassController {
 
         // 转换
         Student student = objectMapper.readValue(decodedStudent, Student.class);
+        System.out.println("---------------------------------");
         System.out.println(student);
         // List<OpenClass> openClasses = objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass());
         // System.out.println(openClasses);
         // 我们获取json数据之后并且将其转换为list类型以后,我们是不能直接去使用list数据的,因为此时的list的类型是LinkedHashMap
         // 我们仍然需要进行一次转换,转换的过程中再将其转换为我们真正想要的数据类型
         List<OpenClass> openClasses = objectMapper.convertValue(objectMapper.readValue(decodedData, new ArrayList<OpenClass>().getClass()),new TypeReference<List<OpenClass>>() {});
-
+        System.out.println(openClasses);
+        System.out.println("---------------------------------");
         /**
          * 将处理好的学生信息以及对应学生的选课信息传入
          * 处理后的结果可能有以下几种：
@@ -108,6 +111,7 @@ public class SelectClassController {
          * 2. 选课成功！
          */
         return iSelectClassService.studentSelect(student, openClasses);
+        // return null;
     }
 
 
@@ -193,8 +197,9 @@ public class SelectClassController {
                                             @RequestParam(defaultValue = "10") Integer pageSize,
                                             @RequestParam(required = false) Integer studentId,
                                             @RequestParam(required = false) String studentName,
-                                            @RequestParam(required = false) String className){
-        Page<SelectClass> page = iSelectClassService.getStudentDetails(new Page<>(currentPage, pageSize), studentId, studentName, className);
+                                            @RequestParam(required = false) String className,
+                                            @RequestParam Integer teacherId){
+        Page<SelectClass> page = iSelectClassService.getStudentDetails(new Page<>(currentPage, pageSize), studentId, studentName, className, teacherId);
         return new APIResponse<>(page, APIStatusCode.SUCCESS, "查询成功!");
     }
 

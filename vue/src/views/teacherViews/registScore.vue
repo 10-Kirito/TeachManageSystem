@@ -180,7 +180,8 @@ export default {
           pageSize: this.pageSize,
           studentId: this.searchInfo.studentId,
           studentName: this.searchInfo.studentName,
-          className: this.searchInfo.className
+          className: this.searchInfo.className,
+          teacherId: this.user.teacherId
         }
       }).then(response => {
         // console.log(response);

@@ -31,7 +31,7 @@ public interface ISelectClassService extends IService<SelectClass> {
 
     List<Student> listClassStudents(Integer teacherId, String classId);
 
-    Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className);
+    Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className, Integer teacherId);
 
     APIResponse<?> regist(Integer recordId, Integer usuallyScore, Integer testScore);
 }

@@ -59,7 +59,6 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
     @Override
     public APIResponse<?> studentSelect(Student student, List<OpenClass> openClasses) {
 
-        System.out.println(openClasses);
         SelectClass selectClass = new SelectClass();
         selectClass.setStudentId(student.getStudentId());
 
@@ -69,7 +68,7 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
         //      如果说存在冲突的话,停止本次选课;
         //      如果说没有时间冲突的话，就将相应的数据插入到数据库当中;
         System.out.println(openClasses);
-
+        System.out.println("+++++++++++++++++++++++++++++");
         for (OpenClass openClass: openClasses) {
             time = openClass.getTime();
             if (checkExist(time, student.getStudentId())) {
@@ -77,6 +76,7 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
                 return new APIResponse<>(null, APIStatusCode.BAD_REQUEST, "选课时间冲突!");
             }
         }
+        System.out.println("+++++++++++++++++++++++++++++");
         // 进行数据库中的数据的更新:
         for (OpenClass openClass : openClasses){
             selectClass.setOpenRecord(openClass.getRecordId());
@@ -84,6 +84,7 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
             save(selectClass);
             System.out.println("选课数据保存成功!");
         }
+        System.out.println("+++++++++++++++++++++++++++++");
         return new APIResponse<>(null, APIStatusCode.SUCCESS, "选课成功!");
     }
 
@@ -124,8 +125,8 @@ public class SelectClassServiceImpl extends ServiceImpl<SelectClassMapper, Selec
     }
 
     @Override
-    public Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className) {
-        return selectClassMapper.getStudentDetails(page, studentId, studentName, className);
+    public Page<SelectClass> getStudentDetails(Page<Object> page, Integer studentId, String studentName, String className, Integer teacherId) {
+        return selectClassMapper.getStudentDetails(page, studentId, studentName, className, teacherId);
     }
 
     @Override

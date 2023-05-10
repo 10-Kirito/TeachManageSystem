@@ -43,4 +43,6 @@ public interface IOpenClassService extends IService<OpenClass> {
     List<OpenClass> myClassDetails(Integer teacherId);
 
     Page<OpenClass> myClassDetailsPages(Page<Object> page, Integer teacherId, String classId, String className);
+
+    APIResponse<?> updateTime(Integer recordId, String time, String location);
 }

@@ -5,8 +5,8 @@
     <div style="margin: 10px 0">
       <el-input style="width: 290px;" suffix-icon="el-icon-search" placeholder="请输入课程号" v-model="searchInfo.classId"></el-input>
       <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入课程名" v-model="searchInfo.className"></el-input>
-      <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师姓名" v-model="searchInfo.classScore"></el-input>
-      <el-button style="margin-left: 5px; width: 100px" type="primary" @click="load">搜索</el-button>
+      <el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请输入教师姓名" v-model="searchInfo.teacherName"></el-input>
+      <el-button style="margin-left: 5px; width: 100px" type="primary" @click="search">搜索</el-button>
       <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
 
@@ -20,14 +20,15 @@
       <el-table-column prop="teacherName" label="教师姓名" width="80"></el-table-column>
       <el-table-column prop="position" label="职称" width="80"></el-table-column>
       <el-table-column prop="time" label="上课时间"></el-table-column>
-      <el-table-column prop="location" label="上课地点"></el-table-column>
-      <el-table-column prop="capacity" label="容量"></el-table-column>
-      <el-table-column prop="enrollment" label="人数"></el-table-column>
+      <el-table-column prop="location" label="上课地点" width="100"></el-table-column>
+      <el-table-column prop="capacity" label="容量" width="55"></el-table-column>
+      <el-table-column prop="enrollment" label="人数" width="55"></el-table-column>
       <el-table-column prop="departName" label="学院"></el-table-column>
 
-      <el-table-column width="210">
+      <el-table-column width="310">
 
         <template slot-scope="scope">
+          <el-button type="success" @click="handleTimeLocation(scope.row)">编辑<i class="el-icon-edit" style="margin-right: 5px"></i></el-button>
           <el-button type="success" @click="handleExpansion(scope.row)">扩容<i class="el-icon-edit" style="margin-right: 5px"></i></el-button>
           <el-button type="danger" @click="handleDel(scope.row)">删除 <i class="el-icon-circle-close" style="margin-left: 2px"></i></el-button>
         </template>
@@ -59,6 +60,33 @@
       </span>
     </el-dialog>
 
+    <el-dialog title="修改课程上课时间和上课地点:" :visible.sync="dialogVisible_2" width="30%" :before-close="handleClose">
+      <el-form label-width="80px" size="small">
+        <el-form-item label="课程号">
+          <el-input v-model="addInfo.classId" autocomplete="off" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="课程名">
+          <el-input v-model="addInfo.className" autocomplete="off" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="教师号">
+          <el-input v-model="addInfo.teacherId" autocomplete="off" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="教师姓名">
+          <el-input v-model="addInfo.teacherName" autocomplete="off" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="上课时间">
+          <el-input v-model="addInfo.time" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="上课地点">
+          <el-input v-model="addInfo.location" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible_2 = false">取 消</el-button>
+        <el-button type="primary" @click="handleExitTime">确 定</el-button>
+      </span>
+    </el-dialog>
+
 
 
   </div>
@@ -74,9 +102,10 @@ export default {
       tableData: [],
       total:0,
       pageNum:1,
-      pageSize:5,
+      pageSize:10,
 
       dialogVisible_1: false,
+      dialogVisible_2:false,
       expansion: 60,
 
       searchInfo: {
@@ -101,6 +130,22 @@ export default {
   },
   methods: {
     load() {
+      this.request.get("/open-class/pages", {
+        params: {
+          currentPage: this.pageNum,
+          pageSize: this.pageSize,
+          classId: this.searchInfo.classId,
+          className: this.searchInfo.className,
+          teacherName: this.searchInfo.teacherName
+        }
+      }).then(classPgae => {
+        console.log(classPgae);
+        this.tableData = classPgae.records;
+        this.total = classPgae.total;
+      })
+    },
+    search() {
+      this.pageNum = 1;
       this.request.get("/open-class/pages", {
         params: {
           currentPage: this.pageNum,
@@ -156,6 +201,11 @@ export default {
         });
       });
     },
+    handleTimeLocation(row){
+      this.addInfo = row;
+      this.dialogVisible_2 = true;
+      console.log(this.addInfo);
+    },
     // 点击扩容按钮绑定的处理函数
     handleExpansion(row) {
     //  capacity: 60
@@ -174,6 +224,21 @@ export default {
     //  time: "一5-6，三5-6，五7-8"
       this.addInfo = row;
       this.dialogVisible_1 = true;
+    },
+    handleExitTime(){
+      // 修改上课时间和地点
+      this.request.get("/open-class/updateTime", {
+        params: {
+          recordId: this.addInfo.recordId,
+          time: this.addInfo.time,
+          location: this.addInfo.location
+        }
+      }).then(response => {
+        this.$message.success(response.msg);
+        console.log(response);
+      })
+
+      this.dialogVisible_2 = false;
     },
     // 编辑当前容量并进行更新
     handleExitExpansion(){

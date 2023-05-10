@@ -57,6 +57,7 @@
             <if test="className != null and className != ''">
                 and class_name = #{className}
             </if>
+                and teacher_id = #{teacherId}
         </where>
     </select>
 </mapper>

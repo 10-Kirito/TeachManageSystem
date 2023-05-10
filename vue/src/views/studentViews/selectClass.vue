@@ -504,7 +504,7 @@ export default {
             encodeData: encodedData
           }
         }).then(response => {
-          // console.log(response);
+          console.log(response);
           if (response.code == "BAD_REQUEST")
             this.$message.error(response.msg);
           else
